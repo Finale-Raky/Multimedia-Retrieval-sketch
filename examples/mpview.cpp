@@ -11,7 +11,7 @@ int main(int argc, char** argv)
         window.load_mesh(argv[1]);
 #ifdef __EMSCRIPTEN__
     else
-        window.load_mesh("input.off");
+        window.load_mesh("33.off");
 #endif
 
     return window.run();

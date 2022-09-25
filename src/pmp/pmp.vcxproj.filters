@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\SurfaceMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\SurfaceMeshIO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Curvature.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Decimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\DifferentialGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\DistancePointTriangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Fairing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Features.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Geodesics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\HoleFilling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Normals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Parameterization.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Remeshing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Shapes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Smoothing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Subdivision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\TriangleKdTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Triangulation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\BoundingBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\Exceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\MatVec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\MemoryUsage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\Properties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\SurfaceMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\SurfaceMeshIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\BarycentricCoordinates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Curvature.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Decimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\DifferentialGeometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\DistancePointTriangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Fairing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Features.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Geodesics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Heap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\HoleFilling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\NormalCone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Normals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Parameterization.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Quadric.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Remeshing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Shapes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Smoothing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Subdivision.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\TriangleKdTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\algorithms\Triangulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\raky\source\repos\pmp-library\src\pmp\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="C:\Users\raky\source\repos\pmp-library\external\rply\rply.dir\$(Configuration)\rply.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{90EB373B-7DD4-3A79-BC5E-A1500FC7C09F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object Libraries">
+      <UniqueIdentifier>{3F913B80-AA82-379D-8E53-24941733C57C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{8757EDA3-7419-3E91-95E7-60FD4AD22379}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

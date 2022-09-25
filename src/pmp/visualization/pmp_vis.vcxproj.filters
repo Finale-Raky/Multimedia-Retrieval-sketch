@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\MeshViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\SurfaceMeshGL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\TrackballViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\ColdWarmTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\GL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\MatCapShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\MeshViewer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\PhongShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\SurfaceMeshGL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\TrackballViewer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\raky\source\repos\pmp-library\src\pmp\MatVec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\raky\source\repos\pmp-library\src\pmp\visualization\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{90EB373B-7DD4-3A79-BC5E-A1500FC7C09F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{8757EDA3-7419-3E91-95E7-60FD4AD22379}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

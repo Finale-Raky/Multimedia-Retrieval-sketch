@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\83a8ea2d3b0401ee6788d4fa47014a3f\update_mappings.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\raky\source\repos\pmp-library\external\glfw\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\raky\source\repos\pmp-library\external\glfw\src\mappings.h.in">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="C:\Users\raky\source\repos\pmp-library\external\glfw\CMake\GenerateMappings.cmake" />
+    <None Include="C:\Users\raky\source\repos\pmp-library\build\external\glew\src\CMakeFiles\update_mappings" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{8DEA9D19-B7B0-3CD9-B7B9-FD6DFFE4B2CF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{939EB724-E581-30E2-BCD7-B0880A5730E8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

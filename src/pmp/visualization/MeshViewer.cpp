@@ -11,26 +11,6 @@
 
 namespace pmp {
 
-MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
-    : TrackballViewer(title, width, height, showgui)
-{
-    // setup draw modes
-    clear_draw_modes();
-    add_draw_mode("Points");
-    add_draw_mode("Hidden Line");
-    add_draw_mode("Smooth Shading");
-    add_draw_mode("Texture");
-    set_draw_mode("Smooth Shading");
-
-    crease_angle_ = 180.0;
-
-    // add help items
-    add_help_item("Backspace", "Reload mesh", 3);
-#ifndef __EMSCRIPTEN__
-    add_help_item("W", "Write mesh to 'output.off'", 4);
-#endif
-}
-
 MeshViewer::~MeshViewer() = default;
 
 void MeshViewer::load_mesh(const char* filename)

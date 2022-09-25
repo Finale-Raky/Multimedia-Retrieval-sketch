@@ -698,10 +698,10 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
 
     if (draw_mode == "Points")
     {
-#ifndef __EMSCRIPTEN__
-        glEnable(GL_PROGRAM_POINT_SIZE);
-#endif
-        glDrawArrays(GL_POINTS, 0, n_vertices_);
+//#ifndef __EMSCRIPTEN__
+//        glEnable(GL_PROGRAM_POINT_SIZE);
+//#endif
+//        glDrawArrays(GL_POINTS, 0, n_vertices_);
     }
 
     else if (draw_mode == "Hidden Line")
@@ -712,7 +712,6 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             glDepthRange(0.01, 1.0);
             draw_triangles();
             glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-
             // overlay edges
             glDepthRange(0.0, 1.0);
             glDepthFunc(GL_LEQUAL);

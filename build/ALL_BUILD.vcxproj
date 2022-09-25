@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveNugetPackages>false</ResolveNugetPackages>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CAD9F007-0C1A-3D4A-B641-D2F7677A4B00}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\raky\source\repos\pmp-library\external\stb_image;C:\Users\raky\source\repos\pmp-library\external\glfw\include;C:\Users\raky\source\repos\pmp-library\external\glfw\deps;C:\Users\raky\source\repos\pmp-library\external\glew\include;C:\Users\raky\source\repos\pmp-library\external\imgui;C:\Users\raky\source\repos\pmp-library\external\eigen;C:\Users\raky\source\repos\pmp-library\external\rply;C:\Users\raky\source\repos\pmp-library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\raky\source\repos\pmp-library\external\stb_image;C:\Users\raky\source\repos\pmp-library\external\glfw\include;C:\Users\raky\source\repos\pmp-library\external\glfw\deps;C:\Users\raky\source\repos\pmp-library\external\glew\include;C:\Users\raky\source\repos\pmp-library\external\imgui;C:\Users\raky\source\repos\pmp-library\external\eigen;C:\Users\raky\source\repos\pmp-library\external\rply;C:\Users\raky\source\repos\pmp-library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\raky\source\repos\pmp-library\external\stb_image;C:\Users\raky\source\repos\pmp-library\external\glfw\include;C:\Users\raky\source\repos\pmp-library\external\glfw\deps;C:\Users\raky\source\repos\pmp-library\external\glew\include;C:\Users\raky\source\repos\pmp-library\external\imgui;C:\Users\raky\source\repos\pmp-library\external\eigen;C:\Users\raky\source\repos\pmp-library\external\rply;C:\Users\raky\source\repos\pmp-library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\raky\source\repos\pmp-library\external\stb_image;C:\Users\raky\source\repos\pmp-library\external\glfw\include;C:\Users\raky\source\repos\pmp-library\external\glfw\deps;C:\Users\raky\source\repos\pmp-library\external\glew\include;C:\Users\raky\source\repos\pmp-library\external\imgui;C:\Users\raky\source\repos\pmp-library\external\eigen;C:\Users\raky\source\repos\pmp-library\external\rply;C:\Users\raky\source\repos\pmp-library\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\raky\source\repos\pmp-library\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/raky/source/repos/pmp-library/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/raky/source/repos/pmp-library -BC:/Users/raky/source/repos/pmp-library/build --check-stamp-file C:/Users/raky/source/repos/pmp-library/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-3.24\Modules\AddFileDependencies.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\BasicConfigVersion-SameMajorVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\WriteBasicConfigVersionFile.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeCCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeCXXCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeRCCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeSystem.cmake;C:\Users\raky\source\repos\pmp-library\cmake\clang-format.cmake;C:\Users\raky\source\repos\pmp-library\cmake\clang-tidy.cmake;C:\Users\raky\source\repos\pmp-library\cmake\cmake_uninstall.cmake.in;C:\Users\raky\source\repos\pmp-library\cmake\pmpConfig.cmake.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/raky/source/repos/pmp-library/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/raky/source/repos/pmp-library -BC:/Users/raky/source/repos/pmp-library/build --check-stamp-file C:/Users/raky/source/repos/pmp-library/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-3.24\Modules\AddFileDependencies.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\BasicConfigVersion-SameMajorVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\WriteBasicConfigVersionFile.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeCCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeCXXCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeRCCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeSystem.cmake;C:\Users\raky\source\repos\pmp-library\cmake\clang-format.cmake;C:\Users\raky\source\repos\pmp-library\cmake\clang-tidy.cmake;C:\Users\raky\source\repos\pmp-library\cmake\cmake_uninstall.cmake.in;C:\Users\raky\source\repos\pmp-library\cmake\pmpConfig.cmake.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/raky/source/repos/pmp-library/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/raky/source/repos/pmp-library -BC:/Users/raky/source/repos/pmp-library/build --check-stamp-file C:/Users/raky/source/repos/pmp-library/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-3.24\Modules\AddFileDependencies.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\BasicConfigVersion-SameMajorVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\WriteBasicConfigVersionFile.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeCCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeCXXCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeRCCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeSystem.cmake;C:\Users\raky\source\repos\pmp-library\cmake\clang-format.cmake;C:\Users\raky\source\repos\pmp-library\cmake\clang-tidy.cmake;C:\Users\raky\source\repos\pmp-library\cmake\cmake_uninstall.cmake.in;C:\Users\raky\source\repos\pmp-library\cmake\pmpConfig.cmake.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/raky/source/repos/pmp-library/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/raky/source/repos/pmp-library -BC:/Users/raky/source/repos/pmp-library/build --check-stamp-file C:/Users/raky/source/repos/pmp-library/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-3.24\Modules\AddFileDependencies.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\BasicConfigVersion-SameMajorVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.24\Modules\WriteBasicConfigVersionFile.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeCCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeCXXCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeRCCompiler.cmake;C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\3.24.2\CMakeSystem.cmake;C:\Users\raky\source\repos\pmp-library\cmake\clang-format.cmake;C:\Users\raky\source\repos\pmp-library\cmake\clang-tidy.cmake;C:\Users\raky\source\repos\pmp-library\cmake\cmake_uninstall.cmake.in;C:\Users\raky\source\repos\pmp-library\cmake\pmpConfig.cmake.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\raky\source\repos\pmp-library\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\ZERO_CHECK.vcxproj">
+      <Project>{58808545-4666-3C91-B07F-7AA955E5C8DC}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\barycenter.vcxproj">
+      <Project>{737F97E6-3FD8-38D0-BF3F-A9E8804A19C6}</Project>
+      <Name>barycenter</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\basics.vcxproj">
+      <Project>{1221E440-C96B-31B9-96FA-DAB97CA63890}</Project>
+      <Name>basics</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\curvature.vcxproj">
+      <Project>{C88E22EB-E047-301A-922C-43D279E91281}</Project>
+      <Name>curvature</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\decimation.vcxproj">
+      <Project>{1346FF61-4728-3867-8AC4-3AA66CF6F6FB}</Project>
+      <Name>decimation</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\fairing.vcxproj">
+      <Project>{931F665A-38E8-38E4-9D41-7005B0B76DA8}</Project>
+      <Name>fairing</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\glew.vcxproj">
+      <Project>{ADA3B722-8683-3AB5-839D-C8FAA6E2BDA0}</Project>
+      <Name>glew</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\external\glew\src\glfw.vcxproj">
+      <Project>{7B284AC1-C70F-35C1-A986-AAF49B2C9EC5}</Project>
+      <Name>glfw</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\tests\googletest.vcxproj">
+      <Project>{05961BC5-FFEB-3366-B738-BCC13D8E13C7}</Project>
+      <Name>googletest</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\tests\gtest_runner.vcxproj">
+      <Project>{6B7047DF-C3A8-3F46-A2E2-21C4728E960D}</Project>
+      <Name>gtest_runner</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\external\imgui\imgui.vcxproj">
+      <Project>{AC943CAC-136F-3DBB-8607-43A7A4559538}</Project>
+      <Name>imgui</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\io.vcxproj">
+      <Project>{E9F1CE37-3019-3AAF-986C-13A676EA35C3}</Project>
+      <Name>io</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\iterators.vcxproj">
+      <Project>{EA5330E1-AFC5-3011-B2CD-DFADAD0E4C86}</Project>
+      <Name>iterators</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\mpview.vcxproj">
+      <Project>{265A2680-945B-3603-B8FE-8DD017320125}</Project>
+      <Name>mpview</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\mview.vcxproj">
+      <Project>{22BA4017-C656-3601-BBAC-3372C533B679}</Project>
+      <Name>mview</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\parameterization.vcxproj">
+      <Project>{CAB294EF-020B-3560-A138-D313797B55A7}</Project>
+      <Name>parameterization</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\src\pmp\pmp.vcxproj">
+      <Project>{6C477C43-66C7-3983-A3B9-6506F5C9D415}</Project>
+      <Name>pmp</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\src\pmp\visualization\pmp_vis.vcxproj">
+      <Project>{8F7F34CA-849C-3367-A809-9C451D78431D}</Project>
+      <Name>pmp_vis</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\properties.vcxproj">
+      <Project>{ED4883CA-A30F-3738-8C42-1931255A346C}</Project>
+      <Name>properties</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\remeshing.vcxproj">
+      <Project>{21BA2B8F-E0D5-33B6-B750-1E0BBD1166BB}</Project>
+      <Name>remeshing</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\external\rply\rply.vcxproj">
+      <Project>{BB04A888-1273-3D7B-827D-25E7E0F8B9EE}</Project>
+      <Name>rply</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\smoothing.vcxproj">
+      <Project>{952335F4-3743-357B-B4B2-51167EF3C713}</Project>
+      <Name>smoothing</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\external\stb_image\stb_image.vcxproj">
+      <Project>{9FE9D6F3-6B22-3033-A245-EEA1B2A6A297}</Project>
+      <Name>stb_image</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\raky\source\repos\pmp-library\build\examples\subdivision.vcxproj">
+      <Project>{05DB1747-1F45-36C7-9F08-7FC9A07BDDD2}</Project>
+      <Name>subdivision</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
