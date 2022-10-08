@@ -59,12 +59,12 @@ int main()
             break;
         }
 
-        //file open successfully
+        // file open successfully, read mesh
         SurfaceMesh mesh;
         mesh.read(fileName);
         mesh.write("output.off");
 
-        //calculate the mean valence of the mesh
+        // calculate the mean valence of the mesh
         float mean_valence = 0.0f;
 
         // loop over all vertices
@@ -94,11 +94,8 @@ int main()
 
         // create bounding box and get the size
         BoundingBox bb(pmin, pmax);
-        //= mesh.bounds();
         auto size = bb.size();
-        //mesh.bounds().size();
         bbcenter = bb.center();
-        //mesh.bounds().center();
         std::cout << "bbcenter: " << p << std::endl;
         
         // cout info
@@ -232,7 +229,7 @@ int main()
             csvout << "mixes of triangles and quads; ";
         }
 
-        // calculate the number of vertices and faces
+        // print the number of vertices and faces
         std::cout << "The number of vertices and faces:\n";
         csvout << "The number of vertices and faces: ";
         std::cout << "vertices: " << mesh.n_vertices() << ";" << std::endl;
@@ -240,7 +237,7 @@ int main()
         std::cout << "faces: " << mesh.n_faces() << ";" << std::endl;
         csvout << "faces: " << mesh.n_faces() << "; ";
 
-        // detect the bounding box and calculate the size of bounding box
+        // if the bounding box exist, calculate the size of bounding box
         std::cout << "Bounding box: ";
         csvout << "Bounding box ";
         if (bb.is_empty())
