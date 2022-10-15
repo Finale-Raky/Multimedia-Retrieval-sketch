@@ -3,7 +3,7 @@
 #include "UnstructuredGrid3D.h"							//the 3D unstructured grid class
 #include "MeshRenderer.h"								//a simple renderer for 3D unstructured grids, demonstrating flat/smooth shading
 #include "PlyReader.h"									//a reader that initializes UnstructuredGrid3D objects with meshes stored in the PLY file format
-#include "zpr.h"										//library for interactively manipulating the OpenGL camera (viewpoint) using the mouse
+#include "zpr.h" from zpr.cpp										//library for interactively manipulating the OpenGL camera (viewpoint) using the mouse
 #include "MeshDecimator.h"
 #include <iostream>
 
