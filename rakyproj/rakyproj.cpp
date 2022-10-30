@@ -332,20 +332,20 @@ int main(int argc, char** argv)
         }
         cout << "diameter: " << diameter << endl;*/
 
-        Eigen::VectorXcd eval = afes.eigenvalues();
-        std::vector<double> v_eval = {eval(0).real(), eval(1).real(),
-                                     eval(2).real()};
+        Eigen::VectorXcd eigenval = afes.eigenvalues();
+        std::vector<double> com_eigenval = {eigenval(0).real(), eigenval(1).real(),
+                                     eigenval(2).real()};
         int bigid = std::distance(
-            v_eval.begin(), std::max_element(v_eval.begin(), v_eval.end()));
+            com_eigenval.begin(), std::max_element(com_eigenval.begin(), com_eigenval.end()));
         int smallid = std::distance(
-            v_eval.begin(), std::min_element(v_eval.begin(), v_eval.end()));
-        cout << "x: " << eval(0).real() << "y: " << eval(1).real()
+            com_eigenval.begin(), std::min_element(com_eigenval.begin(), com_eigenval.end()));
+        /*cout << "x: " << eigenval(0).real() << "y: " << eigenval(1).real()
              << "z: "
              <<
-            eval(2).real() << endl;
-        cout << "biggest eval: " << bigid << endl;
-        cout << "smallest eval: " << smallid << endl;
-        double eccentricity = eval(bigid).real() / eval(smallid).real();
+            eigenval(2).real() << endl;
+        cout << "biggest eigenval: " << bigid << endl;
+        cout << "smallest eigenval: " << smallid << endl;*/
+        double eccentricity = eigenval(bigid).real() / eigenval(smallid).real();
         cout << "eccentricity: " << eccentricity << endl;
 
         //other descriptor
