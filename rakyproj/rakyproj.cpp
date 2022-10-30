@@ -1,5 +1,12 @@
 // rakyproj.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+//#include <cstdlib>
+//#include <fstream>
+//#include <stdio.h>
+//#include <string.h>
+//#include <iostream>
+//#include "MeshProcessingViewer.h"
+//#include <pmp/BoundingBox.h>
+
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -10,11 +17,20 @@
 #include<fstream>
 #include<stdio.h>
 #include<string.h>
+#include <pmp/SurfaceMesh.h>
 #include <pmp/algorithms/Remeshing.h>
 #include "MeshProcessingViewer.h"
 #include "pmp/BoundingBox.h"
+#include <string>
+#include <vector>
+#include "pmp/visualization/Window.h"
 #include "pmp/algorithms/HoleFilling.h"
-
+#include "pmp/MatVec.h"
+#include <Eigen/Dense>
+#include <pmp/algorithms/Triangulation.h>
+#include "pmp/algorithms/DifferentialGeometry.h"
+#include "Common_Func.h"
+using Eigen::MatrixXd;
 using namespace pmp;
 using namespace std;
 
@@ -25,14 +41,14 @@ void clearFile(string filePath)
     fs.close();                  
 }
 
-double Distance(const vec3& V1, const vec3& V2)
-{
-    double a = (V1[0] - V2[0]) * (V1[0] - V2[0]);
-    double b = (V1[1] - V2[1]) * (V1[1] - V2[1]);
-    double c = (V1[2] - V2[2]) * (V1[2] - V2[2]);
-    double distance = sqrt(a + b + c);
-    return distance;
-}
+//double Distance(const vec3& V1, const vec3& V2)
+//{
+//    double a = (V1[0] - V2[0]) * (V1[0] - V2[0]);
+//    double b = (V1[1] - V2[1]) * (V1[1] - V2[1]);
+//    double c = (V1[2] - V2[2]) * (V1[2] - V2[2]);
+//    double distance = sqrt(a + b + c);
+//    return distance;
+//}
 
 Halfedge find_boundary(const SurfaceMesh& mesh)
 {
@@ -42,7 +58,7 @@ Halfedge find_boundary(const SurfaceMesh& mesh)
     return Halfedge();
 }
 
-int main()
+int main(int argc, char** argv)
 {
     std::cout << "Readme: Please use the mesh in Labeled PSB folder only or the type classifying will not work properly\n";
     std::cout << "Do you want to scan all? (y/n)  ";
@@ -50,7 +66,7 @@ int main()
     int cycle;
     bool scan= true, autoscan = true;
     fstream meshfile, csvout;
-    char fileRName, filepath[11] = "LabeledDB/", filetype[5] = ".off",
+    char filepath[11] = "LabeledDB/", filetype[5] = ".off",
          csvpath[15] = "csv/report.csv";
 
     // Clear csv file and open
@@ -104,103 +120,350 @@ int main()
         csvout << Type[(cycle - 1)/ 20] << "; ";
 
         //the number of faces and vertices of the shape
-        std::cout << "vertices: " << mesh.n_vertices() << std::endl;
+        std::cout << "original vertices: " << mesh.n_vertices() << std::endl;
         csvout << mesh.n_vertices() << "; ";
-        //std::cout << "edges: " << mesh.n_edges() << std::endl;
-        std::cout << "faces: " << mesh.n_faces() << std::endl;
-        csvout << mesh.n_faces() << "; ";
 
-        //the type of faces
-        if (mesh.is_triangle_mesh())
-        {
-            std::cout << "triangles" << std::endl;
-            csvout << "triangles; ";
-        }
-            
-        else if (mesh.is_quad_mesh())
-        {
-            std::cout << "quads" << std::endl;
-            csvout << "quads; ";
-        }
-        else
-        {
-            std::cout << "mixed" << std::endl;
-            csvout << "mixed; ";
-        }
+        ////std::cout << "edges: " << mesh.n_edges() << std::endl;
+        //std::cout << "faces: " << mesh.n_faces() << std::endl;
+        //csvout << mesh.n_faces() << "; ";
+
+        ////the type of faces
+        //if (mesh.is_triangle_mesh())
+        //{
+        //    std::cout << "triangles" << std::endl;
+        //    csvout << "triangles; ";
+        //}
+        //    
+        //else if (mesh.is_quad_mesh())
+        //{
+        //    std::cout << "quads" << std::endl;
+        //    csvout << "quads; ";
+        //}
+        //else
+        //{
+        //    std::cout << "mixed" << std::endl;
+        //    csvout << "mixed; ";
+        //}
 
         //the axis-aligned 3D bounding box of the shapes
-        std::cout << mesh.bounds().size() << std::endl;
-        std::cout << mesh.bounds().min() << std::endl;
-        csvout << mesh.bounds().min() << "; ";
-        std::cout << mesh.bounds().max() << std::endl;
-        csvout << mesh.bounds().max() << "\n" ;
+        std::cout << "before-aabb size:" << mesh.bounds().size() << std::endl;
+        csvout << mesh.bounds().size() << "; ";
+        //std::cout << "before-aabb center:" << mesh.bounds().center() << std::endl;
+        double befored = Distance(mesh.bounds().center(), vec3(0, 0, 0));
+        std::cout << "before-aabb center distance:" << befored << std::endl;
+        csvout << befored << "; ";
+        //csvout << mesh.bounds().min() << "; ";
+        //std::cout << mesh.bounds().max() << std::endl;
+        //csvout << mesh.bounds().max() << "\n" ;
 
         //// Activate the viewer
         //MeshProcessingViewer window("MeshProcessingViewer", 800, 600);
         //window.load_mesh(fileName);
         ////printf("\n\n\n");
         //return window.run();
-        //! [barycenter]
+        // 
+        int num_v = mesh.n_vertices();
+        int num_f = mesh.n_faces();
         // get pre-defined property storing vertex positions
         auto points = mesh.get_vertex_property<Point>("v:point");
-        Point p(0, 0, 0);
+        MatrixXd A_o(num_v, 3); //Get the matrix A_o
+        int i = 0;
         for (auto v : mesh.vertices())
         {
-            // access point property like an array
-            p += points[v];
+            A_o(i, 0) = points[v][0]; //x_coordinate
+            A_o(i, 1) = points[v][1]; //y_coordinate
+            A_o(i, 2) = points[v][2]; //z_coordinate
+            i++;
         }
-        p /= mesh.n_vertices();
-        std::cout << "barycenter: " << p << std::endl;
+        Point p = A_o.colwise().mean(); //! [barycenter]
+        std::cout << "barycenter: " << A_o.colwise().mean() << std::endl;
 
         //translation
+        //MatrixXd A_trans = A_o.rowwise() - A_o.colwise().mean();
+
+        //Computing posscalar
+        MatrixXd becentered = A_o.rowwise() - A_o.colwise().mean();
+        MatrixXd becov = becentered.adjoint() * becentered;
+        Eigen::EigenSolver<MatrixXd> bees(becov);
+
+        MatrixXd bee_v = bees.pseudoEigenvectors();
+        Eigen::Vector3d bee1 = bee_v.row(0);
+
+        double beforeposscalar = abs(bee1[0]) / abs(Distance(bee1, vec3(0, 0, 0)));
+        std::cout << "before posscalar: " << beforeposscalar << std::endl;
+        csvout << beforeposscalar << "; ";
+        
+        //Computing PCA in C++
+        MatrixXd A_trans = A_o.rowwise() - A_o.colwise().mean();
+        MatrixXd centered = A_trans.rowwise() - A_trans.colwise().mean();
+        MatrixXd cov = centered.adjoint() * centered;
+        Eigen::EigenSolver<MatrixXd> es(cov);
+
+        MatrixXd e_v = es.pseudoEigenvectors();
+        Eigen::Vector3d e1 = e_v.col(1);
+        Eigen::Vector3d e2 = e_v.col(0);
+        Eigen::Vector3d e3 = e1.cross(e2);
+
+        //Alignment
+        i = 0;
         for (auto v : mesh.vertices())
         {
-            points[v] = points[v] - p;
+            Eigen::Vector3d p_update = A_trans.row(i);
+            points[v][0] = p_update.dot(e1);
+            points[v][1] = p_update.dot(e2);
+            points[v][2] = p_update.dot(e3);
+            i++;
+        }
+        //mesh.write("align.off");
+
+        //flipping
+        double f0 = 0, f1 = 0, f2 = 0;
+        for (auto f : mesh.faces()) // loop over all faces
+        {
+            Point c(0, 0, 0);
+            Scalar n(0);
+            for (auto v : mesh.vertices(f))
+            {
+                c += mesh.position(v);
+                ++n;
+            }
+            c /= n;
+            //computes a value fi along each axis
+            double c_x, c_y, c_z;
+            c_x = c[0];
+            c_y = c[1];
+            c_z = c[2];
+            f0 += sign(c_x) * c_x * c_x;
+            f1 += sign(c_y) * c_y * c_y;
+            f2 += sign(c_z) * c_z * c_z;
         }
 
-        //scale
-        int signx = 1, signy = 1, signz = 1;
-        double scale, maxdistance = 0;
+        //Size
+        // compute the axis-aligned bounding box sizes
+        /* double scale = -1;
+    for (auto v : mesh.vertices())
+    {
+        double d = Distance(points[v], vec3(0, 0, 0));
+        if (d >= scale)
+            scale = d;
+    }
+    cout << "scale: " << scale << endl;*/
+
+        //Scale
+        Eigen::Vector3d b_min = mesh.bounds().min();
+        Eigen::Vector3d b_max = mesh.bounds().max();
+        Eigen::Vector3d D = b_max - b_min;
+        double scale = 1 / D.maxCoeff();
+
         for (auto v : mesh.vertices())
         {
-            double d = Distance(points[v], vec3(0, 0, 0));
-            if (d >= maxdistance)
-                maxdistance = d;
+            points[v][0] = points[v][0] * scale * sign(f0);
+            points[v][1] = points[v][1] * scale * sign(f1);
+            points[v][2] = points[v][2] * scale * sign(f2);
         }
-        scale = maxdistance / 0.5;
 
-        Point ps(0, 0, 0);
+        ////holefilling(water-proof)
+        //// find boundary halfedge
+        //Halfedge h = find_boundary(mesh);
+
+        //// fill hole
+        //HoleFilling hf(mesh);
+        //hf.fill_hole(h);
+
+        //compute afterposscalar
+        MatrixXd A_af(num_v, 3); //Get the matrix A_o
+        i = 0;
         for (auto v : mesh.vertices())
         {
-            ps += points[v];
+            A_af(i, 0) = points[v][0]; //x_coordinate
+            A_af(i, 1) = points[v][1]; //y_coordinate
+            A_af(i, 2) = points[v][2]; //z_coordinate
+            i++;
         }
-        if (ps[0] < 0)
-            signx = -1;
-        if (ps[1] < 0)
-            signy = -1;
-        if (ps[2] < 0)
-            signz = -1;
-        std::cout << "scale: " << signx << std::endl;
-        std::cout << "scale: " << signy << std::endl;
-        std::cout << "scale: " << signz << std::endl;
+        Point afp = A_af.colwise().mean(); //! [barycenter]
+        std::cout << "barycenter: " << A_af.colwise().mean() << std::endl;
 
+        //translation
+        //MatrixXd A_trans = A_af.rowwise() - A_af.colwise().mean();
+
+        //Computing posscalar
+        MatrixXd afcentered = A_af.rowwise() - A_af.colwise().mean();
+        MatrixXd afcov = afcentered.adjoint() * afcentered;
+        Eigen::EigenSolver<MatrixXd> afes(afcov);
+
+        /*MatrixXd afe_v = afes.pseudoEigenvectors();
+        Eigen::Vector3d afe1 = afe_v.row(0);
+
+        std::cout << "after vertices: " << mesh.n_vertices() << std::endl;
+        csvout << mesh.n_vertices() << "; ";
+        std::cout << "after-aabb size:" << mesh.bounds().size() << std::endl;
+        csvout << mesh.bounds().size() << "; ";
+        std::cout << "after-aabb center:" << mesh.bounds().center() << std::endl;
+        double afterd = Distance(mesh.bounds().center(), vec3(0, 0, 0));
+        std::cout << "after-aabb center distance:" << afterd << std::endl;
+        csvout << afterd << "; \n";
+        double afterposscalar =
+            abs(afe1[0]) / abs(Distance(afe1, vec3(0, 0, 0)));
+        std::cout << "after posscalar: " << afterposscalar << std::endl;
+        csvout << afterposscalar << "; ";*/
+
+        //mesh.write("scale.off");
+        /***********************Step 3.2*******************************/
+        auto S = surface_area(mesh);
+        cout << "surface area: " << S << endl;
+
+        auto V = volume(mesh);
+        auto C = (S * S * S) / (36 * M_PI * V * V);
+        cout << "compactness: " << C << endl;
+
+        auto R = V / mesh.bounds().size();
+        cout << "3D rectangularity: " << R << endl;
+        /*float diameter = 0;
+        for (auto v1 : mesh.vertices())
+        {
+            for (auto v2 : mesh.vertices())
+            {
+                float dist = Distance(points[v1], points[v2]);
+                if (dist > diameter)
+                {
+                    diameter = dist;
+                }
+            }
+        }
+        cout << "diameter: " << diameter << endl;*/
+
+        Eigen::VectorXcd eval = afes.eigenvalues();
+        std::vector<double> v_eval = {eval(0).real(), eval(1).real(),
+                                     eval(2).real()};
+        int bigid = std::distance(
+            v_eval.begin(), std::max_element(v_eval.begin(), v_eval.end()));
+        int smallid = std::distance(
+            v_eval.begin(), std::min_element(v_eval.begin(), v_eval.end()));
+        cout << "x: " << eval(0).real() << "y: " << eval(1).real()
+             << "z: "
+             <<
+            eval(2).real() << endl;
+        cout << "biggest eval: " << bigid << endl;
+        cout << "smallest eval: " << smallid << endl;
+        double eccentricity = eval(bigid).real() / eval(smallid).real();
+        cout << "eccentricity: " << eccentricity << endl;
+
+        //other descriptor
+        std::vector<Point> p_arr;
         for (auto v : mesh.vertices())
         {
-            points[v][0] = points[v][0] / scale * signx;
-            points[v][1] = points[v][1] / scale * signy;
-            points[v][2] = points[v][2] / scale * signz;
+            p_arr.push_back(points[v]);
+        }
+        
+        int bin_count = 8;
+        int data_count = 100000;
+        size_t n_vertices = mesh.n_vertices();
+
+        std::vector<float> a3_hist(bin_count, 0);
+        std::vector<float> d1_hist(bin_count, 0);
+        std::vector<float> d2_hist(bin_count, 0);
+        std::vector<float> d3_hist(bin_count, 0);
+        std::vector<float> d4_hist(bin_count, 0);
+        srand(time(0));
+        for (int i = 0; i < data_count; i++)
+        {
+            int id_0 = rand() % n_vertices;
+            int id_1 = rand() % n_vertices;
+            while (id_1 == id_0)
+            {
+                id_1 = rand() % n_vertices;
+            }
+            int id_2 = rand() % n_vertices;
+            while (id_2 == id_0 || id_2 == id_1)
+            {
+                id_2 = rand() % n_vertices;
+            }
+            Point e0 = p_arr[id_1] - p_arr[id_0];
+            Point e1 = p_arr[id_2] - p_arr[id_0];
+            float a3_cos = std::clamp(dot(e0, e1) / distance(e0, Point(0)) / distance(e1, Point(0)), -1.f, 1.f);
+            float a3 = acos(a3_cos) / M_PI * 180;
+            int bin_id = std::clamp(int(a3 / 180 * bin_count), 0, bin_count - 1);
+            a3_hist[bin_id]++;
+
+            int id_3 = rand() % n_vertices;
+            float d1 = distance(p_arr[id_3], Point(0));
+            float dist_max = sqrt(3) / 2.f;
+            bin_id = int(d1 / dist_max * bin_count);
+            d1_hist[bin_id]++;
+
+            int id_4 = rand() % n_vertices;
+            int id_5 = rand() % n_vertices;
+            while (id_5 == id_4)
+            {
+                id_5 = rand() % n_vertices;
+            }
+            float d2 = distance(p_arr[id_4], p_arr[id_5]);
+            dist_max = sqrt(3);
+            bin_id = int(d2 / dist_max * bin_count);
+            d2_hist[bin_id]++;
+
+            int id_6 = rand() % n_vertices;
+            int id_7 = rand() % n_vertices;
+            while (id_7 == id_6)
+            {
+                id_7 = rand() % n_vertices;
+            }
+            int id_8 = rand() % n_vertices;
+            while (id_8 == id_6 || id_8 == id_7)
+            {
+                id_8 = rand() % n_vertices;
+            }
+            float d3 = sqrt(0.5 * norm(cross(p_arr[id_7] - p_arr[id_6],
+                                             p_arr[id_8] - p_arr[id_6])));
+            float area_max = sqrt(sqrt(3) / 2.f);
+            bin_id = int(d3 / area_max * bin_count);
+            d3_hist[bin_id]++;
+
+            int id_9 = rand() % n_vertices;
+            int id_10 = rand() % n_vertices;
+            while (id_10 == id_9)
+            {
+                id_10 = rand() % n_vertices;
+            }
+            int id_11 = rand() % n_vertices;
+            while (id_11 == id_9 || id_11 == id_10)
+            {
+                id_11 = rand() % n_vertices;
+            }
+            int id_12 = rand() % n_vertices;
+            while (id_12 == id_9 || id_11 == id_10 || id_12 == id_11)
+            {
+                id_12 = rand() % n_vertices;
+            }
+            float d4 = cbrt(abs(dot(p_arr[id_12] - p_arr[id_9],
+                                    cross(p_arr[id_10] - p_arr[id_9],
+                                          p_arr[id_11] - p_arr[id_9]))) / 6);
+            float volume_max = sqrt(1.f / 3);
+            bin_id = int(d4 / volume_max * bin_count);
+            d4_hist[bin_id]++;
         }
 
-        //holefilling(water-proof)
-        // find boundary halfedge
-        Halfedge h = find_boundary(mesh);
-
-        // fill hole
-        HoleFilling hf(mesh);
-        hf.fill_hole(h);
-
-        mesh.write("scale.off");
-
+        for (int i = 0; i < bin_count; i++)
+        {
+            cout << a3_hist[i] / data_count << ",";
+        }
+        for (int i = 0; i < bin_count; i++)
+        {
+            cout << d1_hist[i] / data_count << ",";
+        }
+        for (int i = 0; i < bin_count; i++)
+        {
+            cout << d2_hist[i] / data_count << ",";
+        }
+        for (int i = 0; i < bin_count; i++)
+        {
+            cout << d3_hist[i] / data_count << ",";
+        }
+        for (int i = 0; i < bin_count; i++)
+        {
+            cout << d4_hist[i] / data_count << ",";
+        }
+        cout << "\n";
 
         //cycle control
         cycle++;
