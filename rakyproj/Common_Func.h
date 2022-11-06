@@ -4,6 +4,9 @@
 #include<string.h>
 #include <iostream>
 
+
+#include <iterator>
+
 #include<math.h>
 #include <string>
 #include <vector>
@@ -30,4 +33,11 @@ int sign(double x)
     else
         s = -1;
     return s;
+}
+
+template <class T>
+std::ostream& operator<<(std::ostream& out, const std::vector<T>& container) {
+    std::copy(container.cbegin(), container.cend(), std::ostream_iterator<T>(out, ","));
+
+    return out;
 }
