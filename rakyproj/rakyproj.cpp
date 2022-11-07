@@ -31,7 +31,7 @@
 #include "pmp/algorithms/DifferentialGeometry.h"
 #include "Common_Func.h"
 #include "shapedescriptor.h"
-#include <limits>
+#include <iomanip>
 using Eigen::MatrixXd;
 using namespace pmp;
 using namespace std;
@@ -51,14 +51,9 @@ Halfedge find_boundary(const SurfaceMesh& mesh)
     return Halfedge();
 }
 
-std::fstream& GotoLine(std::fstream& file, unsigned int num)
+bool sortcol(const vector<double>& v1, const vector<double>& v2)
 {
-    file.seekg(std::ios::beg);
-    for (int i = 0; i < num - 1; ++i)
-    {
-        file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-    return file;
+    return v1[1] < v2[1];
 }
 
 int main(int argc, char** argv)
@@ -66,47 +61,120 @@ int main(int argc, char** argv)
     std::cout << "Readme: Please use the mesh in Labeled PSB folder only or the type classifying will not work properly\n";
     std::cout << "Notice: 261 - 280 is not avaliable\n";
     std::cout << "Do you want to examine? y for examine and n for mesh info(y/n)\n";
+    string Type[20] = {"Human", "Cup",     "Glass",   "Airplane", "Ant",
+                       "Chair", "Octopus", "Table",   "Teddy",    "Hand",
+                       "Plier", "Fish",    "Bird",    " ",        "Armadillo",
+                       "Bust",  "Mech",    "Bearing", "Vase",     "Fourleg"};
     char examinput;
     cin >> examinput;
     if (examinput == 'y')
     {
         std::cout << "Please enter the number of mesh: ";
-        int meshno;
-        fstream csvread;
-        cin >> meshno;
+        int meshinfo_size = 57;
+        ifstream csvread;
         vector<vector<string>> content;
         vector<string> row;
-        string line, word;
-
-        fstream file("csv/no_outlier115.csv", ios::in);
+        vector<double> selected_mesh;
+        vector<double> Eucstore;
+        vector<vector<double>> Euclideandistancearray;
+        vector<double> Cosstore;
+        vector<vector<double>> Cosdistancearray;
+        string line, word, meshno, selected_meshclass;
+        double Euclideandistance;
+        bool findno = false;
+        cin >> meshno;
+        ifstream file("csv/no_outlier115.csv", ios::in);
+        selected_mesh.push_back(0);
+        selected_mesh.push_back(0);
         if (file.is_open())
         {
             while (getline(file, line))
             {
                 row.clear();
-
                 stringstream str(line);
-
                 while (getline(str, word, ','))
-                    row.push_back(word);
+                {                   
+                    if (!findno && word == meshno)
+                    {
+                        getline(str, word, ',');
+                        selected_meshclass = word;
+                        for(int i = 0; i < meshinfo_size; i++)
+                        {
+                            getline(str, word, ',');
+                            selected_mesh.push_back(stod(word));
+                        } 
+                        findno = true;
+                    }
+                    else
+                    {
+                        row.push_back(word);
+                    }
+
+                }                  
                 content.push_back(row);
             }
         }
         else
             cout << "Could not open the file\n";
 
-        GotoLine(file, meshno);
-        string selected_mesh;
-        file >> selected_mesh;
-        std::cout << "selected: " << selected_mesh << std::endl;
-
+        std::cout << "You have selected a " << selected_meshclass << std::endl;
+        //std::cout << "Mesh info: " << selected_mesh << std::endl;
+        double Cossum = 0;
         for (int i = 0; i < content.size(); i++)
         {
-            for (int j = 0; j < content[i].size(); j++)
+            if (content[i].size() == 0)
+                continue;
+            double Eucfactor = 0;
+            double Coschild = 0;
+            double Cosparent = 1;
+            double Cosfactor1 = 0;
+            double Cosfactor2 = 0;
+            Eucstore.clear();
+            Cosstore.clear();
+            Eucstore.push_back(stod(content[i][0]));
+            Cosstore.push_back(stod(content[i][0]));
+            for (int j = 2; j < content[i].size(); j++)
             {
-                cout << content[i][j] << " ";
+                Eucfactor += pow((selected_mesh[j] - stod(content[i][j])),2);
+                Cosfactor1 = selected_mesh[j] * stod(content[i][j]);
+                Cosfactor2 =
+                    sqrt(pow(selected_mesh[j], 2) + pow(stod(content[i][j]), 2));
+                Coschild += Cosfactor1;
+                if (Cosfactor2 != 0) Cosparent *= Cosfactor2;               
+                //cout << content[i][j] << " ";
             }
-            cout << "\n";
+            Euclideandistance = sqrt(Eucfactor);
+            //std::cout << "the Euclidean distance to " << content[i][0] << ".off is" << Euclideandistance << std::endl;
+            Eucstore.push_back(Euclideandistance);
+            Euclideandistancearray.push_back(Eucstore);  
+            Cosstore.push_back(abs(1 - (Coschild / Cosparent)));
+            //std::cout << "Coschild and parent: " << Coschild << " " << Cosparent<< " Cosresult : " << 1 - (Coschild / Cosparent)<< std::endl;
+            Cosdistancearray.push_back(Cosstore);
+        }
+        
+        std::sort(Euclideandistancearray.begin(),Euclideandistancearray.end(), sortcol);
+        std::cout << "The most similar 10 shapes by Euclidean Distance are: " << std::endl;
+        std::cout << "     Class         No. Distance " << std::endl;
+        for (int i = 0; i < 10; i++)
+        {
+            cout << setw(10) << Type[(int(Euclideandistancearray[i][0]) - 1) / 20]
+                 << " ";
+            for (int j = 0; j < Euclideandistancearray[i].size(); j++)
+                     cout << setw(10) << Euclideandistancearray[i][j];
+            cout << endl;
+        }
+
+        std::sort(Cosdistancearray.begin(), Cosdistancearray.end(),
+                  sortcol);
+        std::cout << "The most similar 10 shapes by Cosine Distance are: " << std::endl;
+        std::cout << "     Class              No.      Distance " << std::endl;
+        for (int i = Cosdistancearray.size() - 1; i > Cosdistancearray.size() - 11; i--)
+        {
+            cout << setw(10)
+                 << Type[(int(Cosdistancearray[i][0]) - 1) / 20] << " ";
+            for (int j = 0; j < Cosdistancearray[i].size(); j++)
+                cout << setw(15) << Cosdistancearray[i][j];
+            cout << endl;
         }
         return 0;
     }
@@ -150,11 +218,7 @@ int main(int argc, char** argv)
 
             /************************Step 2********************************/
             //the class of the shape
-            string Type[20] = {"Human", "Cup",     "Glass",     "Airplane",
-                               "Ant",   "Chair",   "Octopus",   "Table",
-                               "Teddy", "Hand",    "Plier",     "Fish",
-                               "Bird",  " ",       "Armadillo", "Bust",
-                               "Mech",  "Bearing", "Vase",      "Fourleg"};
+            
             char* tok;
             tok = strtok(strtok(fileName, "."), "/");
             tok = strtok(NULL, "/");
