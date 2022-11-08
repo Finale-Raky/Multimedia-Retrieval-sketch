@@ -177,8 +177,6 @@ float emd(signature_t *Signature1, signature_t *Signature2,
 
 
 
-
-
 /**********************
    init
 **********************/

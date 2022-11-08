@@ -30,7 +30,7 @@ extern "C" {
 /* feature_t SHOULD BE MODIFIED BY THE USER TO REFLECT THE FEATURE TYPE      */
 //typedef int feature_t;
 
-typedef int feature_t;
+typedef double feature_t;
 
 /*****************************************************************************/
 

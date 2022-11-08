@@ -32,6 +32,7 @@
 #include "Common_Func.h"
 #include "shapedescriptor.h"
 #include <iomanip>
+#include "emd.h"
 using Eigen::MatrixXd;
 using namespace pmp;
 using namespace std;
@@ -65,7 +66,8 @@ int main(int argc, char** argv)
                        "Chair", "Octopus", "Table",   "Teddy",    "Hand",
                        "Plier", "Fish",    "Bird",    " ",        "Armadillo",
                        "Bust",  "Mech",    "Bearing", "Vase",     "Fourleg"};
-    char examinput;
+    char examinput, filepath[11] = "LabeledDB/", filetype[5] = ".off",
+         csvpath[15] = "csv/report.csv";
     cin >> examinput;
     if (examinput == 'y')
     {
@@ -74,7 +76,7 @@ int main(int argc, char** argv)
         ifstream csvread;
         vector<vector<string>> content;
         vector<string> row;
-        vector<double> selected_mesh;
+        vector<feature_t> selected_mesh;
         vector<double> Eucstore;
         vector<vector<double>> Euclideandistancearray;
         vector<double> Cosstore;
@@ -82,7 +84,7 @@ int main(int argc, char** argv)
         string line, word, meshno, selected_meshclass;
         double Euclideandistance;
         bool findno = false;
-        cin >> meshno;
+        std::cin >> meshno;
         ifstream file("csv/no_outlier115.csv", ios::in);
         selected_mesh.push_back(0);
         selected_mesh.push_back(0);
@@ -115,11 +117,12 @@ int main(int argc, char** argv)
             }
         }
         else
-            cout << "Could not open the file\n";
+            std::cout << "Could not open the file\n";
 
         std::cout << "You have selected a " << selected_meshclass << std::endl;
         //std::cout << "Mesh info: " << selected_mesh << std::endl;
         double Cossum = 0;
+        
         for (int i = 0; i < content.size(); i++)
         {
             if (content[i].size() == 0)
@@ -150,6 +153,7 @@ int main(int argc, char** argv)
             Cosstore.push_back(abs(1 - (Coschild / Cosparent)));
             //std::cout << "Coschild and parent: " << Coschild << " " << Cosparent<< " Cosresult : " << 1 - (Coschild / Cosparent)<< std::endl;
             Cosdistancearray.push_back(Cosstore);
+            //EMD here
         }
         
         std::sort(Euclideandistancearray.begin(),Euclideandistancearray.end(), sortcol);
@@ -176,6 +180,39 @@ int main(int argc, char** argv)
                 cout << setw(15) << Cosdistancearray[i][j];
             cout << endl;
         }
+        //Activate the viewer
+        int examnum = 10;
+        std::cout << "E for Euclidean; C for Cosine; M for EMD" << std::endl;
+        std::cout << "Which distance do you prefer? (e/c/m): "
+                  << std::endl;
+        char target[10][20];
+        cin >> examinput;
+        if (examinput == 'e')
+        {
+            for (int i = 0; i < examnum; i++)
+            {
+                sprintf(target[i], "%s%d%s", filepath, int(Euclideandistancearray[i][0]), filetype);
+            }
+        }
+        else if (examinput == 'c')
+        {
+            int meshtotal = Cosdistancearray.size() - 1;
+            for (int i = meshtotal;
+                 i > meshtotal - examnum - 1; i--)
+                {
+                    sprintf(target[meshtotal-i], "%s%d%s", filepath, int(Cosdistancearray[i][0]), filetype);
+                    //std::cout << "target is " << target[meshtotal - i] << std::endl;
+                }
+        }
+        else
+            //EMD here
+            return 0;
+        MeshProcessingViewer window1("MeshViewer", 800, 600);
+        //MeshProcessingViewer window4("MeshProcessingViewer", 800, 600);
+        //MeshProcessingViewer window5("MeshProcessingViewer", 800, 600);
+        std::cout << "target is " << target[0] << std::endl;
+        window1.load_mesh(target[0]);
+        window1.run();
         return 0;
     }
     else
@@ -185,8 +222,7 @@ int main(int argc, char** argv)
         int cycle;
         bool scan = true, autoscan = true;
         fstream csvout, csvcompare;
-        char filepath[11] = "LabeledDB/", filetype[5] = ".off",
-             csvpath[15] = "csv/report.csv";
+
 
         // Clear csv file and open
         void clearFile(string(csvpath));
@@ -503,5 +539,4 @@ int main(int argc, char** argv)
         csvout.close();
         return 0;
     }
-    
 }
