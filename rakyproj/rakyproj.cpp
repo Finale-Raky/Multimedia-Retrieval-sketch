@@ -61,12 +61,18 @@ bool sortcol(const vector<double>& v1, const vector<double>& v2)
 int main(int argc, char** argv)
 {
     std::cout << "Readme: Please use the mesh in Labeled PSB folder only or the type classifying will not work properly\n";
-    std::cout << "Notice: 261 - 280 is not avaliable\n";
-    std::cout << "Do you want to examine? y for examine and n for mesh info(y/n)\n";
+    std::cout << "Notice: 261.off - 280.off is not avaliable\n";
+    std::cout << "Do you want to skip examine before querying? (y/n)\n";
     string Type[20] = {"Human", "Cup",     "Glass",   "Airplane", "Ant",
                        "Chair", "Octopus", "Table",   "Teddy",    "Hand",
                        "Plier", "Fish",    "Bird",    " ",        "Armadillo",
                        "Bust",  "Mech",    "Bearing", "Vase",     "Fourleg"};
+    //cup =2, glass = 2, bearing = 1
+    int Typecnt[20] = {
+        20, 18, 18, 20, 20, 20, 20, 20, 20, 20,
+        20, 20, 20, 0,  20, 20, 20, 19, 20, 20,
+    };
+    
     char examinput, filepath[11] = "LabeledDB/", filetype[5] = ".off",
          csvpath[15] = "csv/report.csv";
 
@@ -99,16 +105,21 @@ int main(int argc, char** argv)
         //added
         int itera, iterend;
         char target[10][20];
-        std::cout << "where to start?" << std::endl;
+        std::cout << "*************Querying started*************" << std::endl;
+        std::cout << "where to start(min:1, max:400)?" << std::endl;
         cin >> itera;
-        std::cout << "where to stop?(400 max)" << std::endl;
-        std::cout << "If you're focusing 1 mesh, comparison window will be offered" << std::endl;
+        std::cout << "where to stop?(min:1, max:400)" << std::endl;
+        std::cout << "If you selected 1 mesh, comparison window will be offered" << std::endl;
         cin >> iterend;
         bool awake_viewer = false;
         if (itera == iterend)
         {
             awake_viewer = true;
         }
+        int numberofquery;
+        ;
+        std::cout << "Please enter K(number of query): " << std::endl;
+        std::cin >> numberofquery;
         for (itera; itera <= iterend;
              itera++)
         {
@@ -122,10 +133,9 @@ int main(int argc, char** argv)
             vector<vector<double>> Euclideandistancearray;
             vector<double> Cosstore;
             vector<vector<double>> Cosdistancearray;
-            std::vector<double> av;
-            std::vector<double> bv;
-            std::vector<double> aw;
-            std::vector<double> bw;
+            std::vector<double> av, bv, aw, bw, a3v, d1v, d2v, d3v, d4v, a3w,
+                d1w, d2w, d3w, d4w, ba3v, bd1v, bd2v, bd3v, bd4v, ba3w, bd1w,
+                bd2w, bd3w, bd4w;
             vector<double> EMDstore;
             vector<vector<double>> EMDdistancearray;
             string line, word, selected_meshclass;
@@ -172,8 +182,7 @@ int main(int argc, char** argv)
             else
                 std::cout << "Could not open the file\n";
             
-            std::cout << "You have selected a " << selected_meshclass
-                      << std::endl;
+            std::cout << "You have selected " << itera << ".off, it is a " << selected_meshclass << std::endl;
             csvout << selected_meshclass << ",";
 
             /*for (int i = 0; i < content.size(); i++)
@@ -205,10 +214,26 @@ int main(int argc, char** argv)
                 Eucstore.clear();
                 Cosstore.clear();
                 EMDstore.clear();
-                av.clear();
-                bv.clear();
-                aw.clear();
-                bw.clear();
+                a3v.clear();
+                a3w.clear();
+                ba3v.clear();
+                ba3w.clear();
+                d1v.clear();
+                d1w.clear();
+                bd1v.clear();
+                bd1w.clear();
+                d2v.clear();
+                d2w.clear();
+                bd2v.clear();
+                bd2w.clear();
+                d3v.clear();
+                d3w.clear();
+                bd3v.clear();
+                bd3w.clear();
+                d4v.clear();
+                d4w.clear();
+                bd4v.clear();
+                bd4w.clear();
                 Eucstore.push_back(stod(content[i][0]));
                 Cosstore.push_back(stod(content[i][0]));
                 EMDstore.push_back(stod(content[i][0]));
@@ -227,14 +252,33 @@ int main(int argc, char** argv)
                         Cosparent *= Cosfactor2;
                     //cout << content[i][j] << " ";
                     //EMD
-                    if (j >= 7)
+                    if (j < 7)
+                        EMDEucfactor += Eucfactor;
+                    else if (j >= 7 && j < 17)
                     {
-                        av.push_back(selected_mesh[j]);
-                        bv.push_back(stod(content[i][j]));
-                        //cout << j << ",";
+                        a3v.push_back(selected_mesh[j]);
+                        ba3v.push_back(stod(content[i][j]));
+                    }
+                    else if (j >= 17 && j < 27)
+                    {
+                        d1v.push_back(selected_mesh[j]);
+                        bd1v.push_back(stod(content[i][j]));
+                    }
+                    else if (j >= 27 && j < 37)
+                    {
+                        d2v.push_back(selected_mesh[j]);
+                        bd2v.push_back(stod(content[i][j]));
+                    }
+                    else if (j >= 37 && j < 47)
+                    {
+                        d3v.push_back(selected_mesh[j]);
+                        bd3v.push_back(stod(content[i][j]));
                     }
                     else
-                        EMDEucfactor += Eucfactor;
+                    {
+                        d4v.push_back(selected_mesh[j]);
+                        bd4v.push_back(stod(content[i][j]));
+                    }
                 }
                 //Euc
                 Euclideandistance = sqrt(Eucfactor);
@@ -248,103 +292,203 @@ int main(int argc, char** argv)
                 Cosdistancearray.push_back(Cosstore);
                 
                 //EMD here
-                for (int i = 0; i < 5; i++)
-                    for (int j = 0; j < 10; j++)
-                    {
-                        if (i == 0)
-                        {
-                            aw.push_back(0);
-                            bw.push_back(0);
-                        }
-                        else
-                        {
-                            aw.push_back(1);
-                            bw.push_back(1);
-                        }
-                    }
+                for (int j = 0; j < 10; j++)
+                {
+                    a3w.push_back(1);
+                    ba3w.push_back(1);
+                    d1w.push_back(1);
+                    bd1w.push_back(1);
+                    d2w.push_back(1);
+                    bd2w.push_back(1);
+                    d3w.push_back(1);
+                    bd3w.push_back(1);
+                    d4w.push_back(1);
+                    bd4w.push_back(1);
+                }
+
                 //std::cout << "calculating EMD" << std::endl;
                 //std::cout << "calculating EMD" << std::endl;
-                EMDstore.push_back(sqrt(EMDEucfactor) + wasserstein(av, aw, bv, bw));
+                EMDstore.push_back(log10(sqrt(EMDEucfactor)) +
+                                   log10(wasserstein(a3v, a3w, ba3v, ba3w)) +
+                                   log10(wasserstein(d1v, d1w, bd1v, bd1w)) +
+                                   log10(wasserstein(d2v, d2w, bd2v, bd2w)) +
+                                   log10(wasserstein(d3v, d3w, bd3v, bd3w)) +
+                                   log10(wasserstein(d4v, d4w, bd4v, bd4w)));
+                /*std::cout << "original 5: " << sqrt(EMDEucfactor) << ","
+                          << wasserstein(a3v, a3w, ba3v, ba3w) << ","
+                          << wasserstein(d1v, d1w, bd1v, bd1w) << ","
+                          << wasserstein(d2v, d2w, bd2v, bd2w) << ","
+                          << wasserstein(d3v, d3w, bd3v, bd3w) << ","
+                          << wasserstein(d4v, d4w, bd4v, bd4w) << "\n";
+                std::cout << "log10 : " << log10(sqrt(EMDEucfactor)) << ","
+                          << log10(wasserstein(a3v, a3w, ba3v, ba3w)) << ","
+                          << log10(wasserstein(d1v, d1w, bd1v, bd1w)) << ","
+                          << log10(wasserstein(d2v, d2w, bd2v, bd2w)) << ","
+                          << log10(wasserstein(d3v, d3w, bd3v, bd3w)) << ","
+                          << log10(wasserstein(d4v, d4w, bd4v, bd4w)) << "\n";*/
                 //std::cout << "the EMD to " << content[i][0] << ".off is"<< wasserstein(av, aw, bv, bw) << std::endl;
                 EMDdistancearray.push_back(EMDstore);
             }
 
             //querying result
+            
             //Euclideandistance querying
-            std::sort(Euclideandistancearray.begin(),
-                      Euclideandistancearray.end(), sortcol);
-            std::cout
-                << "The most similar 10 shapes at Euclidean Distance are: "
-                << std::endl;
+            
+            std::sort(Euclideandistancearray.begin(), Euclideandistancearray.end(), sortcol);
+            std::cout << "The most similar " << numberofquery 
+                      << " shapes to this " << selected_meshclass
+                      << " at Euclidean Distance are : " << std::endl;
             std::cout << "     Class         No. Distance " << std::endl;
-            for (int i = 0; i < 10; i++)
+            //d = content.size(), c = Typecnt[?/20], s = numberofquery
+            double TPcnt = 0 ,FPcnt = 0, FNcnt = 0, TNcnt = 0;
+            for (int i = 0; i < numberofquery; i++)
             {
                 std::cout << setw(10)
                      << Type[(int(Euclideandistancearray[i][0]) - 1) / 20]
                      << " ";
                 //added
-                csvout << Type[(int(Euclideandistancearray[i][0]) - 1) / 20]
-                       << ",";
+                //csvout << Type[(int(Euclideandistancearray[i][0]) - 1) / 20]<< ",";
+                
                 for (int j = 0; j < Euclideandistancearray[i].size(); j++)
                 {
                     std::cout << setw(10) << Euclideandistancearray[i][j];
                     //added
-                    csvout << Euclideandistancearray[i][j] << ",";
+                    //csvout << Euclideandistancearray[i][j] << ",";
                 }
-
+                //TP
+                if (selected_meshclass ==
+                    Type[(int(Euclideandistancearray[i][0]) - 1) / 20])
+                {
+                    std::cout << " TP";
+                    TPcnt++;
+                }
                 std::cout << endl;
             }
+            //d = content.size(), c = Typecnt[(int(distancearray[i][0]) - 1) / 20], s = numberofquery
+            FPcnt = numberofquery - TPcnt;
+            //FN = c - TP
+            FNcnt = Typecnt[(itera - 1) / 20] - TPcnt;
+            //TN = d - c - FP
+            TNcnt = content.size() - Typecnt[(itera - 1) / 20] -
+                    FPcnt;
+            if ((TPcnt + FPcnt + TNcnt + FNcnt) != content.size())
+                std::cout << "error" ;
+            double EucPre = TPcnt / (TPcnt + FPcnt);
+            double EucNPV = TNcnt / (TNcnt + FNcnt);
+            double EucSen = TPcnt / (TPcnt + FNcnt);
+            double EucSpe = TNcnt / (TNcnt + FPcnt);
+            double EucAccuracy = (TPcnt + TNcnt) / content.size();
+            /*std::cout << TPcnt << ", " << FPcnt << ", " << FNcnt << ", " << TNcnt << ", "<< EucAccuracy<< std::endl;
+            std::cout << EucPre << ", " << EucNPV << std::endl;
+            std::cout << EucSen << ", " << EucSpe << std::endl;*/
+            csvout << EucAccuracy << "," << EucPre << "," << EucNPV << ","
+                   << EucSen << "," << EucSpe << ",";
+                   
             //Cosine distance querying
             std::sort(Cosdistancearray.begin(), Cosdistancearray.end(),
                       sortcol);
-            std::cout << "The most similar 10 shapes at Cosine Distance are: "
-                      << std::endl;
+            std::cout << "The most similar " << numberofquery
+                      << " shapes to this " << selected_meshclass
+                      << " at Cosine Distance are : " << std::endl;
             std::cout << "     Class              No.      Distance "
                       << std::endl;
+            TPcnt = 0, FPcnt = 0, FNcnt = 0, TNcnt = 0;
             for (int i = Cosdistancearray.size() - 1;
-                 i > Cosdistancearray.size() - 11; i--)
+                 i > Cosdistancearray.size() - numberofquery - 1; i--)
             {
                 std::cout << setw(10)
                           << Type[(int(Cosdistancearray[i][0]) - 1) / 20]
                      << " ";
                 //added
-                csvout << Type[(int(Cosdistancearray[i][0]) - 1) / 20] << ",";
+                //csvout << Type[(int(Cosdistancearray[i][0]) - 1) / 20] << ",";
+                
                 for (int j = 0; j < Cosdistancearray[i].size(); j++)
                 {
                     std::cout << setw(15) << Cosdistancearray[i][j];
                     //added
-                    csvout << Cosdistancearray[i][j] << ",";
+                    //csvout << Cosdistancearray[i][j] << ",";
+                }
+                //TP
+                if (selected_meshclass ==
+                    Type[(int(Cosdistancearray[i][0]) - 1) / 20])
+                {
+                    std::cout << " TP";
+                    TPcnt++;
                 }
                 std::cout << endl;
             }
+            //d = content.size(), c = Typecnt[(int(distancearray[i][0]) - 1) / 20], s = numberofquery
+            FPcnt = numberofquery - TPcnt;
+            //FN = c - TP
+            FNcnt = Typecnt[(itera - 1) / 20] - TPcnt;
+            //TN = d - c - FP
+            TNcnt = content.size() - Typecnt[(itera - 1) / 20] - FPcnt;
+            if (TPcnt + FPcnt + TNcnt + FNcnt != content.size())
+                std::cout << "error";
+            double CosPre = TPcnt / (TPcnt + FPcnt);
+            double CosNPV = TNcnt / (TNcnt + FNcnt);
+            double CosSen = TPcnt / (TPcnt + FNcnt);
+            double CosSpe = TNcnt / (TNcnt + FPcnt);
+            double CosAccuracy = (TPcnt + TNcnt) / content.size();
+            /*std::cout << TPcnt << ", " << CosAccuracy << std::endl;
+            std::cout << CosPre << ", " << CosNPV << std::endl;
+            std::cout << CosSen << ", " << CosSpe << std::endl;*/
+            csvout << CosAccuracy << "," << CosPre << "," << CosNPV << ","
+                   << CosSen << "," << CosSpe << ",";
+
             //Euclidean + EMD distance querying
             std::sort(EMDdistancearray.begin(),
                       EMDdistancearray.end(), sortcol);
-            std::cout
-                << "The most similar 10 shapes of at EMD Distance are: "
-                << std::endl;
+            std::cout << "The most similar " << numberofquery
+                      << " shapes to this " << selected_meshclass
+                      << " at EMD Distance are : " << std::endl;
             std::cout << "     Class         No. Distance " << std::endl;
-            for (int i = 0; i < 10; i++)
+            TPcnt = 0, FPcnt = 0, FNcnt = 0, TNcnt = 0;
+            for (int i = 0; i < numberofquery; i++)
             {
                 std::cout << setw(10)
                           << Type[(int(EMDdistancearray[i][0]) - 1) / 20]
                           << " ";
                 //added
-                csvout << Type[(int(EMDdistancearray[i][0]) - 1) / 20]
-                       << ",";
+                //csvout << Type[(int(EMDdistancearray[i][0]) - 1) / 20] << ",";
+                
                 for (int j = 0; j < EMDdistancearray[i].size(); j++)
                 {
                     std::cout << setw(10) << EMDdistancearray[i][j];
                     //added
-                    csvout << EMDdistancearray[i][j] << ",";
+                    //csvout << EMDdistancearray[i][j] << ",";
+                }
+                //TP
+                if (selected_meshclass ==
+                    Type[(int(EMDdistancearray[i][0]) - 1) / 20])
+                {
+                    std::cout << " TP";
+                    TPcnt++;
                 }
                 std::cout << endl;
             }
+            //d = content.size(), c = Typecnt[(int(distancearray[i][0]) - 1) / 20], s = numberofquery
+            FPcnt = numberofquery - TPcnt;
+            //FN = c - TP
+            FNcnt = Typecnt[(itera - 1) / 20] - TPcnt;
+            //TN = d - c - FP
+            TNcnt = content.size() - Typecnt[(itera - 1) / 20] - FPcnt;
+            if (TPcnt + FPcnt + TNcnt + FNcnt != content.size())
+                std::cout << "error";
+            double EMDPre = TPcnt / (TPcnt + FPcnt);
+            double EMDNPV = TNcnt / (TNcnt + FNcnt);
+            double EMDSen = TPcnt / (TPcnt + FNcnt);
+            double EMDSpe = TNcnt / (TNcnt + FPcnt);
+            double EMDAccuracy = (TPcnt + TNcnt) / content.size();
+            /*std::cout << TPcnt << ", " << EMDAccuracy << std::endl;
+            std::cout << EMDPre << ", " << EMDNPV << std::endl;
+            std::cout << EMDSen << ", " << EMDSpe << std::endl;*/
+            csvout << EMDAccuracy << "," << EMDPre << "," << EMDNPV << ","
+                   << EMDSen << "," << EMDSpe << ",";
 
             //when the number of mesh equals to 1, select preferred distance
             if (awake_viewer)
             {
-                int examnum = 10;
                 std::cout << "Which distance do you prefer? (e/c): "
                           << std::endl;
                 std::cout << "e for Euclidean; c for Cosine, m for EMD"
@@ -352,7 +496,7 @@ int main(int argc, char** argv)
                 std::cin >> examinput;
                 if (examinput == 'e')
                 {
-                    for (int i = 0; i < examnum; i++)
+                    for (int i = 0; i < numberofquery; i++)
                     {
                         std::sprintf(target[i], "%s%d%s", filepath,
                                      int(Euclideandistancearray[i][0]),
@@ -362,7 +506,7 @@ int main(int argc, char** argv)
                 else if (examinput == 'c')
                 {
                     int meshtotal = Cosdistancearray.size() - 1;
-                    for (int i = meshtotal; i > meshtotal - examnum - 1; i--)
+                    for (int i = meshtotal; i > meshtotal - numberofquery - 1; i--)
                     {
                         std::sprintf(target[meshtotal - i], "%s%d%s", filepath,
                                      int(Cosdistancearray[i][0]), filetype);
@@ -372,13 +516,12 @@ int main(int argc, char** argv)
                 else if (examinput == 'm')
                 {
                     //EMD here if avaliable
-                    for (int i = 0; i < examnum; i++)
+                    for (int i = 0; i < numberofquery; i++)
                     {
                         std::sprintf(target[i], "%s%d%s", filepath,
                                      int(EMDdistancearray[i][0]),
                                      filetype);
-                    }
-                    
+                    }     
                 }
                 else
                 {
@@ -407,166 +550,6 @@ int main(int argc, char** argv)
             else if (itera == 260)
                 itera = 280;
         }
-        //int meshinfo_size = 57;
-
-        //vector<vector<string>> content;
-        //vector<string> row;
-        //vector<double> selected_mesh;
-        //vector<double> Eucstore;
-        //vector<vector<double>> Euclideandistancearray;
-        //vector<double> Cosstore;
-        //vector<vector<double>> Cosdistancearray;
-        //string line, word, selected_meshclass;
-
-        //double Euclideandistance;
-        //bool findno = false;
-        //selected_mesh.push_back(0);
-        //selected_mesh.push_back(0);
-
-        //if (file.is_open())
-        //{
-        //    while (getline(file, line))
-        //    {
-        //        stringstream str(line);
-        //        while (getline(str, word, ','))
-        //        {
-        //            if (!findno && word == std::to_string(itera))
-        //            {
-        //                getline(str, word, ',');
-        //                selected_meshclass = word;
-        //                for (int i = 0; i < meshinfo_size; i++)
-        //                {
-        //                    getline(str, word, ',');
-        //                    selected_mesh.push_back(stod(word));
-        //                }
-        //                findno = true;
-        //            }
-        //            else
-        //            {
-        //                row.push_back(word);
-        //            }
-        //        }
-        //        content.push_back(row);
-        //    }
-        //}
-        //else
-        //    std::cout << "Could not open the file\n";
-        //std::cout << "You have selected a " << selected_meshclass << std::endl;
-        //csvout << selected_meshclass << ",";
-        ////std::cout << "Mesh info: " << selected_mesh << std::endl;
-        //double Cossum = 0;
-
-        //for (int i = 0; i < content.size(); i++)
-        //{
-        //    if (content[i].size() == 0)
-        //        continue;
-        //    double Eucfactor = 0;
-        //    double Coschild = 0;
-        //    double Cosparent = 1;
-        //    double Cosfactor1 = 0;
-        //    double Cosfactor2 = 0;
-        //    Eucstore.clear();
-        //    Cosstore.clear();
-
-        //    Eucstore.push_back(stod(content[i][0]));
-        //    Cosstore.push_back(stod(content[i][0]));
-
-        //    for (int j = 2; j < content[i].size(); j++)
-        //    {
-        //        Eucfactor += pow((selected_mesh[j] - stod(content[i][j])), 2);
-        //        Cosfactor1 = selected_mesh[j] * stod(content[i][j]);
-        //        Cosfactor2 = sqrt(pow(selected_mesh[j], 2) +
-        //                          pow(stod(content[i][j]), 2));
-        //        Coschild += Cosfactor1;
-        //        if (Cosfactor2 != 0)
-        //            Cosparent *= Cosfactor2;
-        //        //cout << content[i][j] << " ";
-        //    }
-
-        //    Euclideandistance = sqrt(Eucfactor);
-        //    //std::cout << "the Euclidean distance to " << content[i][0] << ".off is" << Euclideandistance << std::endl;
-        //    Eucstore.push_back(Euclideandistance);
-        //    Euclideandistancearray.push_back(Eucstore);
-        //    Cosstore.push_back(abs(1 - (Coschild / Cosparent)));
-        //    //std::cout << "Coschild and parent: " << Coschild << " " << Cosparent<< " Cosresult : " << 1 - (Coschild / Cosparent)<< std::endl;
-        //    Cosdistancearray.push_back(Cosstore);
-        //    //EMD here
-        //}
-
-        //std::sort(Euclideandistancearray.begin(), Euclideandistancearray.end(),
-        //          sortcol);
-        //std::cout << "The most similar 10 shapes by Euclidean Distance are: "
-        //          << std::endl;
-        //std::cout << "     Class         No. Distance " << std::endl;
-        //for (int i = 0; i < 10; i++)
-        //{
-        //    std::cout << setw(10)
-        //              << Type[(int(Euclideandistancearray[i][0]) - 1) / 20]
-        //              << " ";
-        //    for (int j = 0; j < Euclideandistancearray[i].size(); j++)
-        //    {
-        //        std::cout << setw(10) << Euclideandistancearray[i][j];
-        //    }
-
-        //    std::cout << endl;
-        //}
-
-        //std::sort(Cosdistancearray.begin(), Cosdistancearray.end(), sortcol);
-        //std::cout << "The most similar 10 shapes by Cosine Distance are: "
-        //          << std::endl;
-        //std::cout << "     Class              No.      Distance " << std::endl;
-        //for (int i = Cosdistancearray.size() - 1;
-        //     i > Cosdistancearray.size() - 11; i--)
-        //{
-        //    std::cout << setw(10)
-        //              << Type[(int(Cosdistancearray[i][0]) - 1) / 20] << " ";
-        //    for (int j = 0; j < Cosdistancearray[i].size(); j++)
-        //    {
-        //        std::cout << setw(15) << Cosdistancearray[i][j];
-        //    }
-        //    std::cout << endl;
-        //}
-        //
-        //Select preferred distance and activate the viewer
-        //int examnum = 10;
-        //std::cout << "Which distance do you prefer? (e/c): "
-        //          << std::endl;
-        //std::cout << "e for Euclidean; c for Cosine, m for EMD" << std::endl;
-        //char target[10][20];
-        //std::cin >> examinput;
-        //if (examinput == 'e')
-        //{
-        //    for (int i = 0; i < examnum; i++)
-        //    {
-        //        std::sprintf(target[i], "%s%d%s", filepath,
-        //                     int(Euclideandistancearray[i][0]), filetype);
-        //    }
-        //}
-        //else if (examinput == 'c')
-        //{
-        //    int meshtotal = Cosdistancearray.size() - 1;
-        //    for (int i = meshtotal;
-        //         i > meshtotal - examnum - 1; i--)
-        //        {
-        //            std::sprintf(target[meshtotal - i], "%s%d%s", filepath,
-        //                     int(Cosdistancearray[i][0]), filetype);
-        //            //std::cout << "target is " << target[meshtotal - i] << std::endl;
-        //        }
-        //}
-        //else{
-        //    //EMD here if avaliable
-        //    std::cout << "illegal input!" << std::endl;
-        //    return 0;
-        //}   
-        //MeshProcessingViewer window1("MeshViewer", 800, 600);
-        ////MeshProcessingViewer window2("MeshViewer", 800, 600);
-        ////MeshProcessingViewer window4("MeshProcessingViewer", 800, 600);
-        ////MeshProcessingViewer window5("MeshProcessingViewer", 800, 600);
-        //std::cout << "displaying " << target[0] << std::endl;
-        //window1.load_mesh(target[0]);
-        ////window2.load_mesh(target[1]);
-        //window1.run();
-        ////window2.run();
         if (awake_viewer)
         {
             bool gui = true;
@@ -591,7 +574,7 @@ int main(int argc, char** argv)
     }
     else
     {
-        std::cout << "Do you want to scan all? (y/n)  ";
+        std::cout << "Enter y to scan all meshes for basic info / n for querying one mesh? (y/n)  ";
         char modeinput;
         int cycle;
         bool scan = true, autoscan = true;
@@ -603,10 +586,13 @@ int main(int argc, char** argv)
             autoscan = true;
         }
         else
+        {
             autoscan = false;
-        std::cout << "Where do you want to start? (give a number): ";
+        }
+        char filerealn[10];
+        std::cout << "Please enter the mesh No.(min:1,max:400): ";
         std::cin >> cycle;
-
+        int itera;
         while (scan)
         {
             // select scantype
@@ -616,6 +602,7 @@ int main(int argc, char** argv)
             // initialize
             char fileName[10];
             std::sprintf(fileName, "%s%d%s", filepath, cycle, filetype);
+            std::sprintf(filerealn, "%s%d%s", filepath, cycle, filetype);
             std::puts(fileName);
             SurfaceMesh mesh;
             mesh.read(fileName);
@@ -840,7 +827,7 @@ int main(int argc, char** argv)
                 p_arr.push_back(points[v]);
             }
 
-            int data_count = 10000; // 这里要是平方数不然bin算出来不对
+            int data_count = 100; // 这里要是平方数不然bin算出来不对
             int bin = sqrt(data_count);
 
             std::vector<double> a3_descriptor;
@@ -892,19 +879,474 @@ int main(int argc, char** argv)
             csvout << "\n";
 
             //cycle control
+            itera = cycle;
             cycle++;
             if (cycle == 261)
                 cycle = 281;
             if (!autoscan || cycle == 401)
                 scan = false;
-
-            //// Activate the viewer
-            //MeshProcessingViewer window("MeshProcessingViewer", 800, 600);
-            //window.load_mesh(fileName);
-            ////printf("\n\n\n");
-            //return window.run();
         }
-        csvout.close();
+        if (!autoscan)
+        {
+            // Activate the viewer
+            bool gui = true;
+            MeshViewer viewer3("MeshViewer", 800, 600, gui);
+            viewer3.load_mesh(filerealn);
+            viewer3.run();
+            viewer3.~MeshViewer();
+            csvout.close();
+            int iterend = itera;
+            char target[10][20];
+            bool awake_viewer = true;
+            int numberofquery;
+            std::cout << "Please enter K (How many meshes do you want to check for each query?): " << std::endl;
+            std::cin >> numberofquery;
+            for (itera; itera <= iterend; itera++)
+            {
+                //added
+                int meshinfo_size = 57;
+                ifstream file("csv/no_outlier115.csv", ios::in);
+                vector<vector<string>> content;
+                vector<string> row;
+                vector<double> selected_mesh;
+                vector<double> Eucstore;
+                vector<vector<double>> Euclideandistancearray;
+                vector<double> Cosstore;
+                vector<vector<double>> Cosdistancearray;
+                std::vector<double> av, bv, aw, bw, a3v, d1v, d2v, d3v, d4v,
+                    a3w, d1w, d2w, d3w, d4w, ba3v, bd1v, bd2v, bd3v, bd4v, ba3w,
+                    bd1w, bd2w, bd3w, bd4w;
+                vector<double> EMDstore;
+                vector<vector<double>> EMDdistancearray;
+                string line, word, selected_meshclass;
+
+                double Euclideandistance;
+                bool findno = false;
+                selected_mesh.push_back(0);
+                selected_mesh.push_back(0);
+
+                //std::cout << "iter" << itera << "started" << std::endl;
+                csvout << itera << ",";
+                //int wordcnt = 0, rowcnt = 0;
+                if (file.is_open())
+                {
+                    while (getline(file, line))
+                    {
+                        row.clear();
+                        stringstream str(line);
+                        while (getline(str, word, ','))
+                        {
+                            if (!findno && word == std::to_string(itera))
+                            {
+                                getline(str, word, ',');
+                                selected_meshclass = word;
+                                for (int i = 0; i < meshinfo_size; i++)
+                                {
+                                    getline(str, word, ',');
+                                    selected_mesh.push_back(stod(word));
+                                }
+                                findno = true;
+                            }
+                            else
+                            {
+                                row.push_back(word);
+                                //wordcnt++;
+                            }
+                        }
+                        content.push_back(row);
+                        //rowcnt++;
+                        //cout << "iter " << rowcnt << " wordcnt is " << wordcnt << endl;
+                    }
+                }
+                else
+                    std::cout << "Could not open the file\n";
+
+                std::cout << "You have selected " << itera << ".off, it is a "
+                          << selected_meshclass << std::endl;
+                csvout << selected_meshclass << ",";
+
+                /*for (int i = 0; i < content.size(); i++)
+                cout << "content size, content[i] size: " << i
+                     << ":" << content[i].size() << endl;*/
+                /*for (int i = 0; i < content.size(); i++)
+            {
+                if (content[pointer].size() == 0)
+                    continue;
+                for (int j = 0; j < content[i].size(); j++)
+                    std::cout << content[i][j] << ",";
+            }*/
+
+                //std::cout << "Mesh info: " << selected_mesh << std::endl;
+                double Cossum = 0;
+
+                //added
+                for (int i = 0; i < content.size(); i++)
+                {
+                    /*std::cout << "Pointer is " << i << " ";*/
+                    if (content[i].size() == 0)
+                        continue;
+                    double Eucfactor = 0;
+                    double EMDEucfactor = 0;
+                    double Coschild = 0;
+                    double Cosparent = 1;
+                    double Cosfactor1 = 0;
+                    double Cosfactor2 = 0;
+                    Eucstore.clear();
+                    Cosstore.clear();
+                    EMDstore.clear();
+                    //std::vector<double> av, bv, aw, bw, a3v, d1v, d2v, d3v, d4v,a3w, d1w, d2w, d3w, d4w, ba3v, bd1v, bd2v, bd3v, bd4v, ba3w, bd1w, bd2w, bd3w, bd4w;
+                    a3v.clear();
+                    a3w.clear();
+                    ba3v.clear();
+                    ba3w.clear();
+                    d1v.clear();
+                    d1w.clear();
+                    bd1v.clear();
+                    bd1w.clear();
+                    d2v.clear();
+                    d2w.clear();
+                    bd2v.clear();
+                    bd2w.clear();
+                    d3v.clear();
+                    d3w.clear();
+                    bd3v.clear();
+                    bd3w.clear();
+                    d4v.clear();
+                    d4w.clear();
+                    bd4v.clear();
+                    bd4w.clear();
+                    Eucstore.push_back(stod(content[i][0]));
+                    Cosstore.push_back(stod(content[i][0]));
+                    EMDstore.push_back(stod(content[i][0]));
+                    for (int j = 2; j < meshinfo_size; j++)
+                    {
+                        //added
+                        //EuclideanDistance
+                        Eucfactor +=
+                            pow((selected_mesh[j] - stod(content[i][j])), 2);
+                        //CosDistance
+                        Cosfactor1 = selected_mesh[j] * stod(content[i][j]);
+                        Cosfactor2 = sqrt(pow(selected_mesh[j], 2) +
+                                          pow(stod(content[i][j]), 2));
+                        Coschild += Cosfactor1;
+                        if (Cosfactor2 != 0)
+                            Cosparent *= Cosfactor2;
+                        //cout << content[i][j] << " ";
+                        //EMD
+                        if (j < 7)
+                            EMDEucfactor += Eucfactor;
+                        else if (j >= 7 && j < 17)
+                        {
+                            a3v.push_back(selected_mesh[j]);
+                            ba3v.push_back(stod(content[i][j]));
+                        }
+                        else if (j >= 17 && j < 27)
+                        {
+                            d1v.push_back(selected_mesh[j]);
+                            bd1v.push_back(stod(content[i][j]));
+                        }
+                        else if (j >= 27 && j < 37)
+                        {
+                            d2v.push_back(selected_mesh[j]);
+                            bd2v.push_back(stod(content[i][j]));
+                        }
+                        else if (j >= 37 && j < 47)
+                        {
+                            d3v.push_back(selected_mesh[j]);
+                            bd3v.push_back(stod(content[i][j]));
+                        }
+                        else
+                        {
+                            d4v.push_back(selected_mesh[j]);
+                            bd4v.push_back(stod(content[i][j]));
+                        }        
+                    }
+                    //Euc
+                    Euclideandistance = sqrt(Eucfactor);
+                    //std::cout << "the Euclidean distance to " << content[i][0] << ".off is" << Euclideandistance << std::endl;
+                    Eucstore.push_back(Euclideandistance);
+                    Euclideandistancearray.push_back(Eucstore);
+
+                    //Cos
+                    Cosstore.push_back(abs(1 - (Coschild / Cosparent)));
+                    //std::cout << "Cosparent: " << Cosparent<< " Cosresult : " << 1 - (Coschild / Cosparent)<< std::endl;
+                    Cosdistancearray.push_back(Cosstore);
+
+                    //EMD here
+                    for (int j = 0; j < 10; j++)
+                    {
+                        a3w.push_back(0);
+                        ba3w.push_back(0);
+                        d1w.push_back(0.1);
+                        bd1w.push_back(0.1);
+                        d2w.push_back(0.35);
+                        bd2w.push_back(0.35);
+                        d3w.push_back(0.35);
+                        bd3w.push_back(0.35);
+                        d4w.push_back(0.2);
+                        bd4w.push_back(0.2);
+                    }
+
+                    //std::cout << "calculating EMD" << std::endl;
+                    //std::cout << "calculating EMD" << std::endl;
+                    EMDstore.push_back(log10(sqrt(EMDEucfactor)) +
+                        log10(wasserstein(a3v, a3w, ba3v, ba3w)) +
+                        log10(wasserstein(d1v, d1w, bd1v, bd1w)) +
+                        log10(wasserstein(d2v, d2w, bd2v, bd2w)) +
+                        log10(wasserstein(d3v, d3w, bd3v, bd3w)) +
+                        log10(wasserstein(d4v, d4w, bd4v, bd4w)));
+
+                    //std::cout << "the EMD to " << content[i][0] << ".off is"<< wasserstein(av, aw, bv, bw) << std::endl;
+                    EMDdistancearray.push_back(EMDstore);
+                }
+
+                //querying result
+
+                //Euclideandistance querying
+
+                std::sort(Euclideandistancearray.begin(),
+                          Euclideandistancearray.end(), sortcol);
+                std::cout << "The most similar " << numberofquery
+                          << " shapes to this " << selected_meshclass
+                          << " at Euclidean Distance are : " << std::endl;
+                std::cout << "     Class         No. Distance " << std::endl;
+                //d = content.size(), c = Typecnt[?/20], s = numberofquery
+                double TPcnt = 0, FPcnt = 0, FNcnt = 0, TNcnt = 0;
+                for (int i = 0; i < numberofquery; i++)
+                {
+                    std::cout
+                        << setw(10)
+                        << Type[(int(Euclideandistancearray[i][0]) - 1) / 20]
+                        << " ";
+                    //added
+                    //csvout << Type[(int(Euclideandistancearray[i][0]) - 1) / 20]<< ",";
+                    for (int j = 0; j < Euclideandistancearray[i].size(); j++)
+                    {
+                        std::cout << setw(10) << Euclideandistancearray[i][j];
+                        //added
+                        //csvout << Euclideandistancearray[i][j] << ",";
+                    }
+                    //TP
+                    if (selected_meshclass ==
+                        Type[(int(Euclideandistancearray[i][0]) - 1) / 20])
+                    {
+                        std::cout << " TP";
+                        TPcnt++;
+                    }
+                    std::cout << endl;
+                }
+                //d = content.size(), c = Typecnt[(int(distancearray[i][0]) - 1) / 20], s = numberofquery
+                FPcnt = numberofquery - TPcnt;
+                //FN = c - TP
+                FNcnt = Typecnt[(itera - 1) / 20] - TPcnt;
+                //TN = d - c - FP
+                TNcnt = content.size() - Typecnt[(itera - 1) / 20] - FPcnt;
+                if ((TPcnt + FPcnt + TNcnt + FNcnt) != content.size())
+                    std::cout << "error";
+                double EucPre = TPcnt / (TPcnt + FPcnt);
+                double EucNPV = TNcnt / (TNcnt + FNcnt);
+                double EucSen = TPcnt / (TPcnt + FNcnt);
+                double EucSpe = TNcnt / (TNcnt + FPcnt);
+                double EucAccuracy = (TPcnt + TNcnt) / content.size();
+                std::cout << "TP count:" << TPcnt << std::endl;
+                /*std::cout << TPcnt << ", " << FPcnt << ", " << FNcnt << ", "
+                          << TNcnt << ", " << EucAccuracy << std::endl;
+                std::cout << EucPre << ", " << EucNPV << std::endl;
+                std::cout << EucSen << ", " << EucSpe << std::endl;*/
+                csvout << EucAccuracy << "," << EucPre << "," << EucNPV << ","
+                       << EucSen << "," << EucSpe << ",";
+
+                //Cosine distance querying
+                std::sort(Cosdistancearray.begin(), Cosdistancearray.end(),
+                          sortcol);
+                std::cout << "The most similar " << numberofquery
+                          << " shapes to this " << selected_meshclass
+                          << " at Cosine Distance are : " << std::endl;
+                std::cout << "     Class              No.      Distance "
+                          << std::endl;
+                TPcnt = 0, FPcnt = 0, FNcnt = 0, TNcnt = 0;
+                for (int i = Cosdistancearray.size() - 1;
+                     i > Cosdistancearray.size() - numberofquery - 1; i--)
+                {
+                    std::cout << setw(10)
+                              << Type[(int(Cosdistancearray[i][0]) - 1) / 20]
+                              << " ";
+                    //added
+                    //csvout << Type[(int(Cosdistancearray[i][0]) - 1) / 20] << ",";
+                    
+                    for (int j = 0; j < Cosdistancearray[i].size(); j++)
+                    {
+                        std::cout << setw(15) << Cosdistancearray[i][j];
+                        //added
+                        //csvout << Cosdistancearray[i][j] << ","; 
+                    }
+                    //TP
+                    if (selected_meshclass ==
+                        Type[(int(Cosdistancearray[i][0]) - 1) / 20])
+                    {
+                        std::cout << " TP";
+                        TPcnt++;
+                    }
+                    std::cout << endl;
+                }
+                //d = content.size(), c = Typecnt[(int(distancearray[i][0]) - 1) / 20], s = numberofquery
+                FPcnt = numberofquery - TPcnt;
+                //FN = c - TP
+                FNcnt = Typecnt[(itera - 1) / 20] - TPcnt;
+                //TN = d - c - FP
+                TNcnt = content.size() - Typecnt[(itera - 1) / 20] - FPcnt;
+                if (TPcnt + FPcnt + TNcnt + FNcnt != content.size())
+                    std::cout << "error";
+                double CosPre = TPcnt / (TPcnt + FPcnt);
+                double CosNPV = TNcnt / (TNcnt + FNcnt);
+                double CosSen = TPcnt / (TPcnt + FNcnt);
+                double CosSpe = TNcnt / (TNcnt + FPcnt);
+                double CosAccuracy = (TPcnt + TNcnt) / content.size();
+                std::cout << "TP count:" << TPcnt << std::endl;
+                /*std::cout << TPcnt << ", " << CosAccuracy << std::endl;
+                std::cout << CosPre << ", " << CosNPV << std::endl;
+                std::cout << CosSen << ", " << CosSpe << std::endl;*/
+                csvout << CosAccuracy << "," << CosPre << "," << CosNPV << ","
+                       << CosSen << "," << CosSpe << ",";
+
+                //Euclidean + EMD distance querying
+                std::sort(EMDdistancearray.begin(), EMDdistancearray.end(),
+                          sortcol);
+                std::cout << "The most similar " << numberofquery
+                          << " shapes to this " << selected_meshclass
+                          << " at EMD Distance are : " << std::endl;
+                std::cout << "     Class         No. Distance " << std::endl;
+                TPcnt = 0, FPcnt = 0, FNcnt = 0, TNcnt = 0;
+                for (int i = 0; i < numberofquery; i++)
+                {
+                    std::cout << setw(10)
+                              << Type[(int(EMDdistancearray[i][0]) - 1) / 20]
+                              << " ";
+                    //added
+                    //csvout << Type[(int(EMDdistancearray[i][0]) - 1) / 20] << ",";
+                    
+                    for (int j = 0; j < EMDdistancearray[i].size(); j++)
+                    {
+                        std::cout << setw(10) << EMDdistancearray[i][j];
+                        //added
+                        //csvout << EMDdistancearray[i][j] << ",";
+                    }
+                    //TP
+                    if (selected_meshclass == Type[(int(EMDdistancearray[i][0]) - 1) / 20])
+                    {
+                        std::cout << " TP";
+                        TPcnt++;
+                    }
+                    std::cout << endl;
+                }
+
+                //d = content.size(), c = Typecnt[(int(distancearray[i][0]) - 1) / 20], s = numberofquery
+                FPcnt = numberofquery - TPcnt;
+                //FN = c - TP
+                FNcnt = Typecnt[(itera - 1) / 20] - TPcnt;
+                //TN = d - c - FP
+                TNcnt = content.size() - Typecnt[(itera - 1) / 20] - FPcnt;
+                if (TPcnt + FPcnt + TNcnt + FNcnt != content.size())
+                    std::cout << "error";
+                double EMDPre = TPcnt / (TPcnt + FPcnt);
+                double EMDNPV = TNcnt / (TNcnt + FNcnt);
+                double EMDSen = TPcnt / (TPcnt + FNcnt);
+                double EMDSpe = TNcnt / (TNcnt + FPcnt);
+                double EMDAccuracy = (TPcnt + TNcnt) / content.size();
+                std::cout << "TP count:"<< TPcnt <<std::endl;
+                /*std::cout << TPcnt << ", " << EMDAccuracy << std::endl;
+                std::cout << EMDPre << ", " << EMDNPV << std::endl;
+                std::cout << EMDSen << ", " << EMDSpe << std::endl;*/
+                csvout << EMDAccuracy << "," << EMDPre << "," << EMDNPV << ","
+                       << EMDSen << "," << EMDSpe << ",";
+
+                //when the number of mesh equals to 1, select preferred distance
+                if (awake_viewer)
+                {
+                    std::cout << "Which distance do you prefer? (e/c/m): "
+                              << std::endl;
+                    std::cout << "e for Euclidean; c for Cosine, m for EMD"
+                              << std::endl;
+                    std::cin >> examinput;
+                    if (examinput == 'e')
+                    {
+                        for (int i = 0; i < numberofquery; i++)
+                        {
+                            std::sprintf(target[i], "%s%d%s", filepath,
+                                         int(Euclideandistancearray[i][0]),
+                                         filetype);
+                        }
+                    }
+                    else if (examinput == 'c')
+                    {
+                        int meshtotal = Cosdistancearray.size() - 1;
+                        for (int i = meshtotal;
+                             i > meshtotal - numberofquery - 1; i--)
+                        {
+                            std::sprintf(target[meshtotal - i], "%s%d%s",
+                                         filepath, int(Cosdistancearray[i][0]),
+                                         filetype);
+                            //std::cout << "target is " << target[meshtotal - i] << std::endl;
+                        }
+                    }
+                    else if (examinput == 'm')
+                    {
+                        //EMD here if avaliable
+                        for (int i = 0; i < numberofquery; i++)
+                        {
+                            std::sprintf(target[i], "%s%d%s", filepath,
+                                         int(EMDdistancearray[i][0]), filetype);
+                        }
+                    }
+                    else
+                    {
+                        std::cout << "illegal input!" << std::endl;
+                        return 0;
+                    }
+                }
+
+                //added
+                content.clear();
+                row.clear();
+                selected_mesh.clear();
+                Eucstore.clear();
+                Cosstore.clear();
+                EMDstore.clear();
+                Euclideandistancearray.clear();
+                Cosdistancearray.clear();
+                EMDdistancearray.clear();
+                csvout << std::endl;
+                file.close();
+                //std::cout << "iter" << itera << "ended" << std::endl;
+                //csvout << "\n";
+                if (itera == 24 || itera == 38 || itera == 57 || itera == 46 ||
+                    itera == 356)
+                    itera++;
+                else if (itera == 260)
+                    itera = 280;
+            }
+            if (awake_viewer)
+            {
+                bool gui = true;
+                MeshViewer viewer("MeshViewer: 1st", 800, 600, gui);
+                viewer.load_mesh(target[0]);
+                viewer.run();
+                viewer.~MeshViewer();
+
+                MeshViewer viewer2("MeshViewer: 2nd", 800, 600, gui);
+                viewer2.load_mesh(target[1]);
+                viewer2.run();
+                viewer2.~MeshViewer();
+
+                MeshViewer viewer3("MeshViewer: 3rd", 800, 600, gui);
+                viewer3.load_mesh(target[2]);
+                viewer3.run();
+                viewer3.~MeshViewer();
+                exit(1);
+            }
+        }
+        
+        cin.get();
         return 0;
     }
 }
