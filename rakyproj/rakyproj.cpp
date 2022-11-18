@@ -33,10 +33,63 @@
 #include "shapedescriptor.h"
 #include <iomanip>
 #include "emd1.h"
+#include "nanoflann.hpp"
+#include "utils.h"
 
 using Eigen::MatrixXd;
 using namespace pmp;
 using namespace std;
+using namespace nanoflann;
+
+template <typename num_t>
+void kdtree_demo(const size_t N)
+{
+    using std::cout;
+    using std::endl;
+
+    PointCloud<num_t> cloud;
+    // Generate points:
+    generateRandomPointCloud(cloud, N);
+
+    // construct a kd-tree index:
+    using my_kd_tree_t = nanoflann::KDTreeSingleIndexAdaptor<
+        nanoflann::L2_Simple_Adaptor<num_t, PointCloud<num_t>>,
+        PointCloud<num_t>, 3 /* dim */
+        >;
+
+    my_kd_tree_t index(3 /*dim*/, cloud, {10 /* max leaf */});
+    index.buildIndex();
+
+#if 0
+    // Test resize of dataset and rebuild of index:
+    cloud.pts.resize(cloud.pts.size() * 0.5);
+    index.buildIndex();
+#endif
+
+    const num_t query_pt[3] = {0.5, 0.5, 0.5}; //查找的位置
+
+    // ----------------------------------------------------------------
+    // knnSearch():  Perform a search for the N closest points
+    // ----------------------------------------------------------------
+    {
+        size_t num_results = 5; //Knn的k
+        std::vector<uint32_t> ret_index(num_results);
+        std::vector<num_t> out_dist_sqr(num_results);
+
+        num_results = index.knnSearch(&query_pt[0], num_results, &ret_index[0],
+                                      &out_dist_sqr[0]);
+
+        // In case of less points in the tree than requested:
+        ret_index.resize(num_results);
+        out_dist_sqr.resize(num_results);
+
+        cout << "knnSearch(): num_results=" << num_results << "\n";
+        for (size_t i = 0; i < num_results; i++)
+            cout << "idx[" << i << "]=" << ret_index[i] << " dist[" << i
+                 << "]=" << out_dist_sqr[i] << endl;
+        cout << "\n";
+    }
+}
 
 void clearFile(string filePath)
 {
@@ -82,6 +135,7 @@ int main(int argc, char** argv)
     csvout.open("csv/report.csv", ios::out);
 
     std::cin >> examinput;
+
     if (examinput == 'y')
     {
         
@@ -101,7 +155,7 @@ int main(int argc, char** argv)
         std::cin >> meshno;
         selected_mesh.push_back(0);
         selected_mesh.push_back(0);*/
-
+        
         //added
         int itera, iterend;
         char target[10][20];
@@ -125,7 +179,7 @@ int main(int argc, char** argv)
         {
             //added
             int meshinfo_size = 57;
-            ifstream file("csv/no_outlier115.csv", ios::in);
+            ifstream file("csv/report1115dots1000.csv", ios::in);
             vector<vector<string>> content;
             vector<string> row;
             vector<double> selected_mesh;
@@ -205,12 +259,12 @@ int main(int argc, char** argv)
                 /*std::cout << "Pointer is " << i << " ";*/
                 if (content[i].size() == 0)
                     continue;
-                double Eucfactor = 0;
+                double Eucfactor = 0, Eucfactor3 = 0;
                 double EMDEucfactor = 0;
-                double Coschild = 0;
-                double Cosparent = 1;
-                double Cosfactor1 = 0;
-                double Cosfactor2 = 0;
+                double Coschild = 0, Cosparent = 1;
+                double Coschildm = 0, Cosparentm = 1;
+                double Coschildd = 0, Cosparentd = 1;
+                double Cosfactor1 = 0, Cosfactor2 = 0, Cosfactor3 = 0, Cosfactorm1 = 0, Cosfactorm2 = 0, Cosfactorm3 = 0, Cosfactord1 = 0, Cosfactord2 = 0, Cosfactord3 = 0;
                 Eucstore.clear();
                 Cosstore.clear();
                 EMDstore.clear();
@@ -241,15 +295,56 @@ int main(int argc, char** argv)
                 {
                     //added
                     //EuclideanDistance
-                    Eucfactor +=
-                        pow((selected_mesh[j] - stod(content[i][j])), 2);
+                    /*if (j < 4)
+                        Eucfactor += pow(
+                            1 * pow((selected_mesh[j] - stod(content[i][j])),
+                                      2),
+                            2);
+                    else if (j == 4)
+                        Eucfactor += pow(
+                            0.1 * pow((selected_mesh[j] - stod(content[i][j])),
+                                       2),
+                            2);
+                    else if (j < 7)
+                        Eucfactor += pow(
+                            1 * pow((selected_mesh[j] - stod(content[i][j])),
+                                      2),
+                            2);
+                    else */
+                    if (j >= 7 && j < 17)
+                    {
+                        Eucfactor3 +=pow((selected_mesh[j] - stod(content[i][j])), 2);
+                    }
+                    else
+                    {
+                        Eucfactor += pow((selected_mesh[j] - stod(content[i][j])), 2);
+                    }
+                        
+                    /*Eucfactor +=
+                        pow((selected_mesh[j] - stod(content[i][j])), 2);*/
                     //CosDistance
-                    Cosfactor1 = selected_mesh[j] * stod(content[i][j]);
-                    Cosfactor2 = sqrt(pow(selected_mesh[j], 2) +
-                                      pow(stod(content[i][j]), 2));
-                    Coschild += Cosfactor1;
-                    if (Cosfactor2 != 0)
-                        Cosparent *= Cosfactor2;
+                    if (j >= 7 && j < 17)
+                    {
+                        Cosfactor1 = selected_mesh[j] * stod(content[i][j]);
+                        Cosfactor2 += pow(selected_mesh[j], 2);
+                        Cosfactor3 += pow(stod(content[i][j]), 2);
+                        Coschild += Cosfactor1;
+                    }
+                    /*else if ()
+                    {
+                        Cosfactord1 = selected_mesh[j] * stod(content[i][j]);
+                        Cosfactord2 += pow(selected_mesh[j], 2);
+                        Cosfactord3 += pow(stod(content[i][j]), 2);
+                        Coschildd += Cosfactord1;
+                    }*/
+                    else
+                    {
+                        Cosfactorm1 = selected_mesh[j] * stod(content[i][j]);
+                        Cosfactorm2 += pow(selected_mesh[j], 2);
+                        Cosfactorm3 += pow(stod(content[i][j]), 2);
+                        Coschildm += Cosfactorm1;
+                    }
+                    //if (Cosfactor2 != 0) Cosparent *= Cosfactor2;
                     //cout << content[i][j] << " ";
                     //EMD
                     if (j < 7)
@@ -280,14 +375,19 @@ int main(int argc, char** argv)
                         bd4v.push_back(stod(content[i][j]));
                     }
                 }
-                //Euc
-                Euclideandistance = sqrt(Eucfactor);
+                //Euc with weight
+                Euclideandistance = 1*sqrt(Eucfactor) + 0*sqrt(Eucfactor3);
                 //std::cout << "the Euclidean distance to " << content[i][0] << ".off is" << Euclideandistance << std::endl;
+                
                 Eucstore.push_back(Euclideandistance);
                 Euclideandistancearray.push_back(Eucstore);
                 
                 //Cos
-                Cosstore.push_back(abs(1 - (Coschild / Cosparent)));
+                Cosparent = sqrt(Cosfactor2) * sqrt(Cosfactor3);
+                Cosparentm = sqrt(Cosfactorm2) * sqrt(Cosfactorm3);
+                float cos_wa3 = 0, cos_wd = 0, cos_w = 1 - cos_wa3 - cos_wd;
+                Cosstore.push_back(cos_wa3 * abs(1 - (Coschild / Cosparent)) +
+                                   cos_w * abs(1 - (Coschildm / Cosparentm)) + cos_wd * abs(1 - (Coschildd / Cosparentd)));
                 //std::cout << "Cosparent: " << Cosparent<< " Cosresult : " << 1 - (Coschild / Cosparent)<< std::endl;
                 Cosdistancearray.push_back(Cosstore);
                 
@@ -298,12 +398,12 @@ int main(int argc, char** argv)
                     ba3w.push_back(1);
                     d1w.push_back(1);
                     bd1w.push_back(1);
-                    d2w.push_back(1);
-                    bd2w.push_back(1);
-                    d3w.push_back(1);
-                    bd3w.push_back(1);
-                    d4w.push_back(1);
-                    bd4w.push_back(1);
+                    d2w.push_back(3);
+                    bd2w.push_back(3);
+                    d3w.push_back(3);
+                    bd3w.push_back(3);
+                    d4w.push_back(2);
+                    bd4w.push_back(2);
                 }
 
                 //std::cout << "calculating EMD" << std::endl;
@@ -338,7 +438,7 @@ int main(int argc, char** argv)
             std::cout << "The most similar " << numberofquery 
                       << " shapes to this " << selected_meshclass
                       << " at Euclidean Distance are : " << std::endl;
-            std::cout << "     Class         No. Distance " << std::endl;
+            std::cout << "     Class         No.       Distance " << std::endl;
             //d = content.size(), c = Typecnt[?/20], s = numberofquery
             double TPcnt = 0 ,FPcnt = 0, FNcnt = 0, TNcnt = 0;
             for (int i = 0; i < numberofquery; i++)
@@ -351,7 +451,7 @@ int main(int argc, char** argv)
                 
                 for (int j = 0; j < Euclideandistancearray[i].size(); j++)
                 {
-                    std::cout << setw(10) << Euclideandistancearray[i][j];
+                    std::cout << setw(15) << Euclideandistancearray[i][j];
                     //added
                     //csvout << Euclideandistancearray[i][j] << ",";
                 }
@@ -393,8 +493,8 @@ int main(int argc, char** argv)
             std::cout << "     Class              No.      Distance "
                       << std::endl;
             TPcnt = 0, FPcnt = 0, FNcnt = 0, TNcnt = 0;
-            for (int i = Cosdistancearray.size() - 1;
-                 i > Cosdistancearray.size() - numberofquery - 1; i--)
+            //for (int i = Cosdistancearray.size() - 1;i > Cosdistancearray.size() - numberofquery - 1; i--)
+            for (int i = 0;i < numberofquery; i++)
             {
                 std::cout << setw(10)
                           << Type[(int(Cosdistancearray[i][0]) - 1) / 20]
@@ -409,8 +509,7 @@ int main(int argc, char** argv)
                     //csvout << Cosdistancearray[i][j] << ",";
                 }
                 //TP
-                if (selected_meshclass ==
-                    Type[(int(Cosdistancearray[i][0]) - 1) / 20])
+                if (selected_meshclass == Type[(int(Cosdistancearray[i][0]) - 1) / 20])
                 {
                     std::cout << " TP";
                     TPcnt++;
@@ -827,8 +926,9 @@ int main(int argc, char** argv)
                 p_arr.push_back(points[v]);
             }
 
-            int data_count = 100; // 这里要是平方数不然bin算出来不对
-            int bin = sqrt(data_count);
+            int data_count = 1000; // 这里要是平方数不然bin算出来不对
+            int bin = 10;
+                //sqrt(data_count);
 
             std::vector<double> a3_descriptor;
             std::vector<double> d1_descriptor;
@@ -842,8 +942,7 @@ int main(int argc, char** argv)
                 a3_descriptor.push_back(A3_angle(p_arr, index_A3));
                 // D1
                 vector<int> index_D1 = G_random(1, num_v);
-                d1_descriptor.push_back(
-                    d1_distance(p_arr, index_D1, p)); //p is baryceter
+                d1_descriptor.push_back(d1_distance(p_arr, index_D1, p)); //p is baryceter
                 //D2
                 vector<int> index_D2 = G_random(2, num_v);
                 d2_descriptor.push_back(d2_distance(p_arr, index_D2));
@@ -853,7 +952,12 @@ int main(int argc, char** argv)
                 //D4
                 vector<int> index_D4 = G_random(4, num_v);
                 d4_descriptor.push_back(d4_distance(p_arr, index_D4));
+
             }
+            //knn-test
+            // Randomize Seed
+            //srand(static_cast<unsigned int>(time(nullptr)));
+            //kdtree_demo<float>(20);
 
             std::vector<double> a3_hist;
             a3_hist = hist(bin, a3_descriptor);
@@ -905,7 +1009,7 @@ int main(int argc, char** argv)
             {
                 //added
                 int meshinfo_size = 57;
-                ifstream file("csv/no_outlier115.csv", ios::in);
+                ifstream file("csv/report1115dots1000.csv", ios::in);
                 vector<vector<string>> content;
                 vector<string> row;
                 vector<double> selected_mesh;
@@ -965,16 +1069,16 @@ int main(int argc, char** argv)
                           << selected_meshclass << std::endl;
                 csvout << selected_meshclass << ",";
 
-                /*for (int i = 0; i < content.size(); i++)
-                cout << "content size, content[i] size: " << i
-                     << ":" << content[i].size() << endl;*/
-                /*for (int i = 0; i < content.size(); i++)
-            {
-                if (content[pointer].size() == 0)
-                    continue;
-                for (int j = 0; j < content[i].size(); j++)
-                    std::cout << content[i][j] << ",";
-            }*/
+                    /*for (int i = 0; i < content.size(); i++)
+                    cout << "content size, content[i] size: " << i
+                         << ":" << content[i].size() << endl;*/
+                    /*for (int i = 0; i < content.size(); i++)
+                {
+                    if (content[pointer].size() == 0)
+                        continue;
+                    for (int j = 0; j < content[i].size(); j++)
+                        std::cout << content[i][j] << ",";
+                }*/
 
                 //std::cout << "Mesh info: " << selected_mesh << std::endl;
                 double Cossum = 0;
@@ -985,16 +1089,17 @@ int main(int argc, char** argv)
                     /*std::cout << "Pointer is " << i << " ";*/
                     if (content[i].size() == 0)
                         continue;
-                    double Eucfactor = 0;
+                    double Eucfactor = 0, Eucfactor3 = 0;
                     double EMDEucfactor = 0;
-                    double Coschild = 0;
-                    double Cosparent = 1;
-                    double Cosfactor1 = 0;
-                    double Cosfactor2 = 0;
+                    double Coschild = 0, Cosparent = 1;
+                    double Coschildm = 0, Cosparentm = 1;
+                    double Coschildd = 0, Cosparentd = 1;
+                    double Cosfactor1 = 0, Cosfactor2 = 0, Cosfactor3 = 0,
+                           Cosfactorm1 = 0, Cosfactorm2 = 0, Cosfactorm3 = 0,
+                           Cosfactord1 = 0, Cosfactord2 = 0, Cosfactord3 = 0;
                     Eucstore.clear();
                     Cosstore.clear();
                     EMDstore.clear();
-                    //std::vector<double> av, bv, aw, bw, a3v, d1v, d2v, d3v, d4v,a3w, d1w, d2w, d3w, d4w, ba3v, bd1v, bd2v, bd3v, bd4v, ba3w, bd1w, bd2w, bd3w, bd4w;
                     a3v.clear();
                     a3w.clear();
                     ba3v.clear();
@@ -1022,15 +1127,59 @@ int main(int argc, char** argv)
                     {
                         //added
                         //EuclideanDistance
-                        Eucfactor +=
-                            pow((selected_mesh[j] - stod(content[i][j])), 2);
+                        /*if (j < 4)
+                        Eucfactor += pow(
+                            1 * pow((selected_mesh[j] - stod(content[i][j])),
+                                      2),
+                            2);
+                    else if (j == 4)
+                        Eucfactor += pow(
+                            0.1 * pow((selected_mesh[j] - stod(content[i][j])),
+                                       2),
+                            2);
+                    else if (j < 7)
+                        Eucfactor += pow(
+                            1 * pow((selected_mesh[j] - stod(content[i][j])),
+                                      2),
+                            2);
+                    else */
+                        if (j >= 7 && j < 17)
+                        {
+                            Eucfactor3 += pow(
+                                (selected_mesh[j] - stod(content[i][j])), 2);
+                        }
+                        else
+                        {
+                            Eucfactor += pow(
+                                (selected_mesh[j] - stod(content[i][j])), 2);
+                        }
+
+                        /*Eucfactor +=
+                        pow((selected_mesh[j] - stod(content[i][j])), 2);*/
                         //CosDistance
-                        Cosfactor1 = selected_mesh[j] * stod(content[i][j]);
-                        Cosfactor2 = sqrt(pow(selected_mesh[j], 2) +
-                                          pow(stod(content[i][j]), 2));
-                        Coschild += Cosfactor1;
-                        if (Cosfactor2 != 0)
-                            Cosparent *= Cosfactor2;
+                        if (j >= 7 && j < 17)
+                        {
+                            Cosfactor1 = selected_mesh[j] * stod(content[i][j]);
+                            Cosfactor2 += pow(selected_mesh[j], 2);
+                            Cosfactor3 += pow(stod(content[i][j]), 2);
+                            Coschild += Cosfactor1;
+                        }
+                        /*else if ()
+                    {
+                        Cosfactord1 = selected_mesh[j] * stod(content[i][j]);
+                        Cosfactord2 += pow(selected_mesh[j], 2);
+                        Cosfactord3 += pow(stod(content[i][j]), 2);
+                        Coschildd += Cosfactord1;
+                    }*/
+                        else
+                        {
+                            Cosfactorm1 =
+                                selected_mesh[j] * stod(content[i][j]);
+                            Cosfactorm2 += pow(selected_mesh[j], 2);
+                            Cosfactorm3 += pow(stod(content[i][j]), 2);
+                            Coschildm += Cosfactorm1;
+                        }
+                        //if (Cosfactor2 != 0) Cosparent *= Cosfactor2;
                         //cout << content[i][j] << " ";
                         //EMD
                         if (j < 7)
@@ -1059,43 +1208,63 @@ int main(int argc, char** argv)
                         {
                             d4v.push_back(selected_mesh[j]);
                             bd4v.push_back(stod(content[i][j]));
-                        }        
+                        }
                     }
-                    //Euc
-                    Euclideandistance = sqrt(Eucfactor);
+                    //Euc with weight
+                    Euclideandistance =
+                        1 * sqrt(Eucfactor) + 0 * sqrt(Eucfactor3);
                     //std::cout << "the Euclidean distance to " << content[i][0] << ".off is" << Euclideandistance << std::endl;
+
                     Eucstore.push_back(Euclideandistance);
                     Euclideandistancearray.push_back(Eucstore);
 
                     //Cos
-                    Cosstore.push_back(abs(1 - (Coschild / Cosparent)));
+                    Cosparent = sqrt(Cosfactor2) * sqrt(Cosfactor3);
+                    Cosparentm = sqrt(Cosfactorm2) * sqrt(Cosfactorm3);
+                    float cos_wa3 = 0, cos_wd = 0, cos_w = 1 - cos_wa3 - cos_wd;
+                    Cosstore.push_back(
+                        cos_wa3 * abs(1 - (Coschild / Cosparent)) +
+                        cos_w * abs(1 - (Coschildm / Cosparentm)) +
+                        cos_wd * abs(1 - (Coschildd / Cosparentd)));
                     //std::cout << "Cosparent: " << Cosparent<< " Cosresult : " << 1 - (Coschild / Cosparent)<< std::endl;
                     Cosdistancearray.push_back(Cosstore);
 
                     //EMD here
                     for (int j = 0; j < 10; j++)
                     {
-                        a3w.push_back(0);
-                        ba3w.push_back(0);
-                        d1w.push_back(0.1);
-                        bd1w.push_back(0.1);
-                        d2w.push_back(0.35);
-                        bd2w.push_back(0.35);
-                        d3w.push_back(0.35);
-                        bd3w.push_back(0.35);
-                        d4w.push_back(0.2);
-                        bd4w.push_back(0.2);
+                        a3w.push_back(1);
+                        ba3w.push_back(1);
+                        d1w.push_back(1);
+                        bd1w.push_back(1);
+                        d2w.push_back(3);
+                        bd2w.push_back(3);
+                        d3w.push_back(3);
+                        bd3w.push_back(3);
+                        d4w.push_back(2);
+                        bd4w.push_back(2);
                     }
 
                     //std::cout << "calculating EMD" << std::endl;
                     //std::cout << "calculating EMD" << std::endl;
-                    EMDstore.push_back(log10(sqrt(EMDEucfactor)) +
+                    EMDstore.push_back(
+                        log10(sqrt(EMDEucfactor)) +
                         log10(wasserstein(a3v, a3w, ba3v, ba3w)) +
                         log10(wasserstein(d1v, d1w, bd1v, bd1w)) +
                         log10(wasserstein(d2v, d2w, bd2v, bd2w)) +
                         log10(wasserstein(d3v, d3w, bd3v, bd3w)) +
                         log10(wasserstein(d4v, d4w, bd4v, bd4w)));
-
+                    /*std::cout << "original 5: " << sqrt(EMDEucfactor) << ","
+                          << wasserstein(a3v, a3w, ba3v, ba3w) << ","
+                          << wasserstein(d1v, d1w, bd1v, bd1w) << ","
+                          << wasserstein(d2v, d2w, bd2v, bd2w) << ","
+                          << wasserstein(d3v, d3w, bd3v, bd3w) << ","
+                          << wasserstein(d4v, d4w, bd4v, bd4w) << "\n";
+                std::cout << "log10 : " << log10(sqrt(EMDEucfactor)) << ","
+                          << log10(wasserstein(a3v, a3w, ba3v, ba3w)) << ","
+                          << log10(wasserstein(d1v, d1w, bd1v, bd1w)) << ","
+                          << log10(wasserstein(d2v, d2w, bd2v, bd2w)) << ","
+                          << log10(wasserstein(d3v, d3w, bd3v, bd3w)) << ","
+                          << log10(wasserstein(d4v, d4w, bd4v, bd4w)) << "\n";*/
                     //std::cout << "the EMD to " << content[i][0] << ".off is"<< wasserstein(av, aw, bv, bw) << std::endl;
                     EMDdistancearray.push_back(EMDstore);
                 }
@@ -1109,7 +1278,7 @@ int main(int argc, char** argv)
                 std::cout << "The most similar " << numberofquery
                           << " shapes to this " << selected_meshclass
                           << " at Euclidean Distance are : " << std::endl;
-                std::cout << "     Class         No. Distance " << std::endl;
+                std::cout << "     Class         No.       Distance " << std::endl;
                 //d = content.size(), c = Typecnt[?/20], s = numberofquery
                 double TPcnt = 0, FPcnt = 0, FNcnt = 0, TNcnt = 0;
                 for (int i = 0; i < numberofquery; i++)
@@ -1120,9 +1289,10 @@ int main(int argc, char** argv)
                         << " ";
                     //added
                     //csvout << Type[(int(Euclideandistancearray[i][0]) - 1) / 20]<< ",";
+
                     for (int j = 0; j < Euclideandistancearray[i].size(); j++)
                     {
-                        std::cout << setw(10) << Euclideandistancearray[i][j];
+                        std::cout << setw(15) << Euclideandistancearray[i][j];
                         //added
                         //csvout << Euclideandistancearray[i][j] << ",";
                     }
@@ -1148,11 +1318,9 @@ int main(int argc, char** argv)
                 double EucSen = TPcnt / (TPcnt + FNcnt);
                 double EucSpe = TNcnt / (TNcnt + FPcnt);
                 double EucAccuracy = (TPcnt + TNcnt) / content.size();
-                std::cout << "TP count:" << TPcnt << std::endl;
-                /*std::cout << TPcnt << ", " << FPcnt << ", " << FNcnt << ", "
-                          << TNcnt << ", " << EucAccuracy << std::endl;
-                std::cout << EucPre << ", " << EucNPV << std::endl;
-                std::cout << EucSen << ", " << EucSpe << std::endl;*/
+                /*std::cout << TPcnt << ", " << FPcnt << ", " << FNcnt << ", " << TNcnt << ", "<< EucAccuracy<< std::endl;
+            std::cout << EucPre << ", " << EucNPV << std::endl;
+            std::cout << EucSen << ", " << EucSpe << std::endl;*/
                 csvout << EucAccuracy << "," << EucPre << "," << EucNPV << ","
                        << EucSen << "," << EucSpe << ",";
 
@@ -1165,20 +1333,20 @@ int main(int argc, char** argv)
                 std::cout << "     Class              No.      Distance "
                           << std::endl;
                 TPcnt = 0, FPcnt = 0, FNcnt = 0, TNcnt = 0;
-                for (int i = Cosdistancearray.size() - 1;
-                     i > Cosdistancearray.size() - numberofquery - 1; i--)
+                //for (int i = Cosdistancearray.size() - 1;i > Cosdistancearray.size() - numberofquery - 1; i--)
+                for (int i = 0; i < numberofquery; i++)
                 {
                     std::cout << setw(10)
                               << Type[(int(Cosdistancearray[i][0]) - 1) / 20]
                               << " ";
                     //added
                     //csvout << Type[(int(Cosdistancearray[i][0]) - 1) / 20] << ",";
-                    
+
                     for (int j = 0; j < Cosdistancearray[i].size(); j++)
                     {
                         std::cout << setw(15) << Cosdistancearray[i][j];
                         //added
-                        //csvout << Cosdistancearray[i][j] << ","; 
+                        //csvout << Cosdistancearray[i][j] << ",";
                     }
                     //TP
                     if (selected_meshclass ==
@@ -1202,10 +1370,9 @@ int main(int argc, char** argv)
                 double CosSen = TPcnt / (TPcnt + FNcnt);
                 double CosSpe = TNcnt / (TNcnt + FPcnt);
                 double CosAccuracy = (TPcnt + TNcnt) / content.size();
-                std::cout << "TP count:" << TPcnt << std::endl;
                 /*std::cout << TPcnt << ", " << CosAccuracy << std::endl;
-                std::cout << CosPre << ", " << CosNPV << std::endl;
-                std::cout << CosSen << ", " << CosSpe << std::endl;*/
+            std::cout << CosPre << ", " << CosNPV << std::endl;
+            std::cout << CosSen << ", " << CosSpe << std::endl;*/
                 csvout << CosAccuracy << "," << CosPre << "," << CosNPV << ","
                        << CosSen << "," << CosSpe << ",";
 
@@ -1279,13 +1446,12 @@ int main(int argc, char** argv)
                     }
                     else if (examinput == 'c')
                     {
-                        int meshtotal = Cosdistancearray.size() - 1;
-                        for (int i = meshtotal;
-                             i > meshtotal - numberofquery - 1; i--)
+                        //int meshtotal = Cosdistancearray.size() - 1;
+                        //for (int i = meshtotal;i > meshtotal - numberofquery - 1; i--)
+                        for (int i = 0; i < numberofquery; i++)
                         {
-                            std::sprintf(target[meshtotal - i], "%s%d%s",
-                                         filepath, int(Cosdistancearray[i][0]),
-                                         filetype);
+                            //std::sprintf(target[meshtotal - i], "%s%d%s",filepath, int(Cosdistancearray[i][0]),filetype);
+                            std::sprintf(target[i], "%s%d%s",filepath, int(Cosdistancearray[i][0]),filetype);
                             //std::cout << "target is " << target[meshtotal - i] << std::endl;
                         }
                     }
