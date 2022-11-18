@@ -1,12 +1,4 @@
 // rakyproj.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//#include <cstdlib>
-//#include <fstream>
-//#include <stdio.h>
-//#include <string.h>
-//#include <iostream>
-//#include "MeshProcessingViewer.h"
-//#include <pmp/BoundingBox.h>
-
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -41,6 +33,7 @@ using namespace pmp;
 using namespace std;
 using namespace nanoflann;
 
+//KNN tool
 template <typename num_t>
 void kdtree_demo(const size_t N)
 {
@@ -98,6 +91,7 @@ void clearFile(string filePath)
     fs.close();                  
 }
 
+//for holefilling
 Halfedge find_boundary(const SurfaceMesh& mesh)
 {
     for (auto h : mesh.halfedges())
@@ -116,12 +110,12 @@ int main(int argc, char** argv)
     std::cout << "Readme: Please use the mesh in Labeled PSB folder only or the type classifying will not work properly\n";
     std::cout << "Notice: 261.off - 280.off is not avaliable\n";
     std::cout << "Do you want to skip examine before querying? (y/n)\n";
-    string Type[20] = {"Human", "Cup",     "Glass",   "Airplane", "Ant",
+    string *Type = new string[20]{"Human", "Cup",     "Glass",   "Airplane", "Ant",
                        "Chair", "Octopus", "Table",   "Teddy",    "Hand",
                        "Plier", "Fish",    "Bird",    " ",        "Armadillo",
                        "Bust",  "Mech",    "Bearing", "Vase",     "Fourleg"};
     //cup =2, glass = 2, bearing = 1
-    int Typecnt[20] = {
+    int *Typecnt = new int[20] {
         20, 18, 18, 20, 20, 20, 20, 20, 20, 20,
         20, 20, 20, 0,  20, 20, 20, 19, 20, 20,
     };
@@ -138,27 +132,10 @@ int main(int argc, char** argv)
 
     if (examinput == 'y')
     {
-        
-        /*std::cout << "Please enter the number of mesh: ";
-        int meshinfo_size = 57;
-        vector<vector<string>> content;
-        vector<string> row;
-        vector<double> selected_mesh;
-        vector<double> Eucstore;
-        vector<vector<double>> Euclideandistancearray;
-        vector<double> Cosstore;
-        vector<vector<double>> Cosdistancearray;
-        string line, word, selected_meshclass;
-        int meshno;
-        double Euclideandistance;
-        bool findno = false;
-        std::cin >> meshno;
-        selected_mesh.push_back(0);
-        selected_mesh.push_back(0);*/
-        
-        //added
         int itera, iterend;
-        char target[10][20];
+        char** target = new char*[10];
+        for (int i = 0; i < 10; ++i)
+            target[i] = new char[20];
         std::cout << "*************Querying started*************" << std::endl;
         std::cout << "where to start(min:1, max:400)?" << std::endl;
         cin >> itera;
@@ -239,18 +216,6 @@ int main(int argc, char** argv)
             std::cout << "You have selected " << itera << ".off, it is a " << selected_meshclass << std::endl;
             csvout << selected_meshclass << ",";
 
-            /*for (int i = 0; i < content.size(); i++)
-                cout << "content size, content[i] size: " << i
-                     << ":" << content[i].size() << endl;*/
-            /*for (int i = 0; i < content.size(); i++)
-            {
-                if (content[pointer].size() == 0)
-                    continue;
-                for (int j = 0; j < content[i].size(); j++)
-                    std::cout << content[i][j] << ",";
-            }*/
-                
-            //std::cout << "Mesh info: " << selected_mesh << std::endl;
             double Cossum = 0;
 
             //added
@@ -295,22 +260,6 @@ int main(int argc, char** argv)
                 {
                     //added
                     //EuclideanDistance
-                    /*if (j < 4)
-                        Eucfactor += pow(
-                            1 * pow((selected_mesh[j] - stod(content[i][j])),
-                                      2),
-                            2);
-                    else if (j == 4)
-                        Eucfactor += pow(
-                            0.1 * pow((selected_mesh[j] - stod(content[i][j])),
-                                       2),
-                            2);
-                    else if (j < 7)
-                        Eucfactor += pow(
-                            1 * pow((selected_mesh[j] - stod(content[i][j])),
-                                      2),
-                            2);
-                    else */
                     if (j >= 7 && j < 17)
                     {
                         Eucfactor3 +=pow((selected_mesh[j] - stod(content[i][j])), 2);
@@ -405,28 +354,12 @@ int main(int argc, char** argv)
                     d4w.push_back(2);
                     bd4w.push_back(2);
                 }
-
-                //std::cout << "calculating EMD" << std::endl;
-                //std::cout << "calculating EMD" << std::endl;
                 EMDstore.push_back(log10(sqrt(EMDEucfactor)) +
                                    log10(wasserstein(a3v, a3w, ba3v, ba3w)) +
                                    log10(wasserstein(d1v, d1w, bd1v, bd1w)) +
                                    log10(wasserstein(d2v, d2w, bd2v, bd2w)) +
                                    log10(wasserstein(d3v, d3w, bd3v, bd3w)) +
                                    log10(wasserstein(d4v, d4w, bd4v, bd4w)));
-                /*std::cout << "original 5: " << sqrt(EMDEucfactor) << ","
-                          << wasserstein(a3v, a3w, ba3v, ba3w) << ","
-                          << wasserstein(d1v, d1w, bd1v, bd1w) << ","
-                          << wasserstein(d2v, d2w, bd2v, bd2w) << ","
-                          << wasserstein(d3v, d3w, bd3v, bd3w) << ","
-                          << wasserstein(d4v, d4w, bd4v, bd4w) << "\n";
-                std::cout << "log10 : " << log10(sqrt(EMDEucfactor)) << ","
-                          << log10(wasserstein(a3v, a3w, ba3v, ba3w)) << ","
-                          << log10(wasserstein(d1v, d1w, bd1v, bd1w)) << ","
-                          << log10(wasserstein(d2v, d2w, bd2v, bd2w)) << ","
-                          << log10(wasserstein(d3v, d3w, bd3v, bd3w)) << ","
-                          << log10(wasserstein(d4v, d4w, bd4v, bd4w)) << "\n";*/
-                //std::cout << "the EMD to " << content[i][0] << ".off is"<< wasserstein(av, aw, bv, bw) << std::endl;
                 EMDdistancearray.push_back(EMDstore);
             }
 
@@ -597,18 +530,14 @@ int main(int argc, char** argv)
                 {
                     for (int i = 0; i < numberofquery; i++)
                     {
-                        std::sprintf(target[i], "%s%d%s", filepath,
-                                     int(Euclideandistancearray[i][0]),
-                                     filetype);
+                        std::sprintf(target[i], "%s%d%s", filepath, int(Euclideandistancearray[i][0]), filetype);
                     }
                 }
                 else if (examinput == 'c')
                 {
-                    int meshtotal = Cosdistancearray.size() - 1;
-                    for (int i = meshtotal; i > meshtotal - numberofquery - 1; i--)
+                    for (int i = 0; i < numberofquery; i++)
                     {
-                        std::sprintf(target[meshtotal - i], "%s%d%s", filepath,
-                                     int(Cosdistancearray[i][0]), filetype);
+                        std::sprintf(target[i], "%s%d%s", filepath, int(Cosdistancearray[i][0]), filetype);
                         //std::cout << "target is " << target[meshtotal - i] << std::endl;
                     }
                 }
@@ -748,8 +677,8 @@ int main(int argc, char** argv)
             Eigen::Vector3d bee1 = bee_v.row(0);
 
             /*double beforeposscalar = abs(bee1[0]) / abs(Distance(bee1, vec3(0, 0, 0)));
-        std::cout << "before posscalar: " << beforeposscalar << std::endl;
-        csvout << beforeposscalar << "; ";*/
+            std::cout << "before posscalar: " << beforeposscalar << std::endl;
+            csvout << beforeposscalar << "; ";*/
 
             //Computing PCA in C++
             MatrixXd A_trans = A_o.rowwise() - A_o.colwise().mean();
@@ -796,17 +725,6 @@ int main(int argc, char** argv)
                 f2 += sign(c_z) * c_z * c_z;
             }
 
-            //Size
-            // compute the axis-aligned bounding box sizes
-            /* double scale = -1;
-    for (auto v : mesh.vertices())
-    {
-        double d = Distance(points[v], vec3(0, 0, 0));
-        if (d >= scale)
-            scale = d;
-    }
-    cout << "scale: " << scale << endl;*/
-
             //Scale
             Eigen::Vector3d b_min = mesh.bounds().min();
             Eigen::Vector3d b_max = mesh.bounds().max();
@@ -820,11 +738,9 @@ int main(int argc, char** argv)
                 points[v][2] = points[v][2] * scale * sign(f2);
             }
 
-            ////holefilling(water-proof)
-            //// find boundary halfedge
+            //holefilling(water-proof)
+            //find boundary halfedge
             //Halfedge h = find_boundary(mesh);
-
-            //// fill hole
             //HoleFilling hf(mesh);
             //hf.fill_hole(h);
 
@@ -849,24 +765,6 @@ int main(int argc, char** argv)
             MatrixXd afcov = afcentered.adjoint() * afcentered;
             Eigen::EigenSolver<MatrixXd> afes(afcov);
 
-            //MatrixXd afe_v = afes.pseudoEigenvectors();
-            //Eigen::Vector3d afe1 = afe_v.row(0);
-
-            //std::cout << "after vertices: " << mesh.n_vertices() << std::endl;
-            //csvout << mesh.n_vertices() << "; ";
-            //std::cout << "after-aabb size:" << mesh.bounds().size() << std::endl;
-            //csvout << mesh.bounds().size() << ", ";
-            //std::cout << "after-aabb center:" << mesh.bounds().center()
-            //          << std::endl;
-            //double afterd = Distance(mesh.bounds().center(), vec3(0, 0, 0));
-            //std::cout << "after-aabb center distance:" << afterd << std::endl;
-            //csvout << afterd << "; \n";
-            //double afterposscalar =
-            //    abs(afe1[0]) / abs(Distance(afe1, vec3(0, 0, 0)));
-            //std::cout << "after posscalar: " << afterposscalar << std::endl;
-            //csvout << afterposscalar << "; ";
-
-            //mesh.write("scale.off");
             /***********************Step 3.2*******************************/
             auto S = surface_area(mesh);
             std::cout << "surface area: " << S << endl;
@@ -905,12 +803,9 @@ int main(int argc, char** argv)
             int smallid = std::distance(
                 com_eigenval.begin(),
                 std::min_element(com_eigenval.begin(), com_eigenval.end()));
-            /*cout << "x: " << eigenval(0).real() << "y: " << eigenval(1).real()
-             << "z: "
-             <<
-            eigenval(2).real() << endl;
-        cout << "biggest eigenval: " << bigid << endl;
-        cout << "smallest eigenval: " << smallid << endl;*/
+            /*cout << "x: " << eigenval(0).real() << "y: " << eigenval(1).real()<< "z: "<< eigenval(2).real() << endl;
+            cout << "biggest eigenval: " << bigid << endl;
+            cout << "smallest eigenval: " << smallid << endl;*/
             double eccentricity =
                 eigenval(bigid).real() / eigenval(smallid).real();
             std::cout << "eccentricity: " << eccentricity << endl;
@@ -992,7 +887,7 @@ int main(int argc, char** argv)
         }
         if (!autoscan)
         {
-            // Activate the viewer
+            // Activate the viewer, display input mesh
             bool gui = true;
             MeshViewer viewer3("MeshViewer", 800, 600, gui);
             viewer3.load_mesh(filerealn);
@@ -1000,7 +895,9 @@ int main(int argc, char** argv)
             viewer3.~MeshViewer();
             csvout.close();
             int iterend = itera;
-            char target[10][20];
+            char** target = new char*[10];
+            for (int i = 0; i < 10; ++i)
+                target[i] = new char[20];
             bool awake_viewer = true;
             int numberofquery;
             std::cout << "Please enter K (How many meshes do you want to check for each query?): " << std::endl;
@@ -1017,7 +914,7 @@ int main(int argc, char** argv)
                 vector<vector<double>> Euclideandistancearray;
                 vector<double> Cosstore;
                 vector<vector<double>> Cosdistancearray;
-                std::vector<double> av, bv, aw, bw, a3v, d1v, d2v, d3v, d4v,
+                vector<double> av, bv, aw, bw, a3v, d1v, d2v, d3v, d4v,
                     a3w, d1w, d2w, d3w, d4w, ba3v, bd1v, bd2v, bd3v, bd4v, ba3w,
                     bd1w, bd2w, bd3w, bd4w;
                 vector<double> EMDstore;
@@ -1127,22 +1024,6 @@ int main(int argc, char** argv)
                     {
                         //added
                         //EuclideanDistance
-                        /*if (j < 4)
-                        Eucfactor += pow(
-                            1 * pow((selected_mesh[j] - stod(content[i][j])),
-                                      2),
-                            2);
-                    else if (j == 4)
-                        Eucfactor += pow(
-                            0.1 * pow((selected_mesh[j] - stod(content[i][j])),
-                                       2),
-                            2);
-                    else if (j < 7)
-                        Eucfactor += pow(
-                            1 * pow((selected_mesh[j] - stod(content[i][j])),
-                                      2),
-                            2);
-                    else */
                         if (j >= 7 && j < 17)
                         {
                             Eucfactor3 += pow(
@@ -1164,13 +1045,6 @@ int main(int argc, char** argv)
                             Cosfactor3 += pow(stod(content[i][j]), 2);
                             Coschild += Cosfactor1;
                         }
-                        /*else if ()
-                    {
-                        Cosfactord1 = selected_mesh[j] * stod(content[i][j]);
-                        Cosfactord2 += pow(selected_mesh[j], 2);
-                        Cosfactord3 += pow(stod(content[i][j]), 2);
-                        Coschildd += Cosfactord1;
-                    }*/
                         else
                         {
                             Cosfactorm1 =
@@ -1253,19 +1127,6 @@ int main(int argc, char** argv)
                         log10(wasserstein(d2v, d2w, bd2v, bd2w)) +
                         log10(wasserstein(d3v, d3w, bd3v, bd3w)) +
                         log10(wasserstein(d4v, d4w, bd4v, bd4w)));
-                    /*std::cout << "original 5: " << sqrt(EMDEucfactor) << ","
-                          << wasserstein(a3v, a3w, ba3v, ba3w) << ","
-                          << wasserstein(d1v, d1w, bd1v, bd1w) << ","
-                          << wasserstein(d2v, d2w, bd2v, bd2w) << ","
-                          << wasserstein(d3v, d3w, bd3v, bd3w) << ","
-                          << wasserstein(d4v, d4w, bd4v, bd4w) << "\n";
-                std::cout << "log10 : " << log10(sqrt(EMDEucfactor)) << ","
-                          << log10(wasserstein(a3v, a3w, ba3v, ba3w)) << ","
-                          << log10(wasserstein(d1v, d1w, bd1v, bd1w)) << ","
-                          << log10(wasserstein(d2v, d2w, bd2v, bd2w)) << ","
-                          << log10(wasserstein(d3v, d3w, bd3v, bd3w)) << ","
-                          << log10(wasserstein(d4v, d4w, bd4v, bd4w)) << "\n";*/
-                    //std::cout << "the EMD to " << content[i][0] << ".off is"<< wasserstein(av, aw, bv, bw) << std::endl;
                     EMDdistancearray.push_back(EMDstore);
                 }
 
@@ -1325,6 +1186,7 @@ int main(int argc, char** argv)
                        << EucSen << "," << EucSpe << ",";
 
                 //Cosine distance querying
+
                 std::sort(Cosdistancearray.begin(), Cosdistancearray.end(),
                           sortcol);
                 std::cout << "The most similar " << numberofquery
@@ -1427,7 +1289,7 @@ int main(int argc, char** argv)
                 csvout << EMDAccuracy << "," << EMDPre << "," << EMDNPV << ","
                        << EMDSen << "," << EMDSpe << ",";
 
-                //when the number of mesh equals to 1, select preferred distance
+                //when the number of mesh equals to 1, ask user to select preferred distance
                 if (awake_viewer)
                 {
                     std::cout << "Which distance do you prefer? (e/c/m): "
@@ -1491,6 +1353,9 @@ int main(int argc, char** argv)
                 else if (itera == 260)
                     itera = 280;
             }
+
+            // if user only select 1 mesh, display 3 best-matching meshes in the viewer
+
             if (awake_viewer)
             {
                 bool gui = true;
