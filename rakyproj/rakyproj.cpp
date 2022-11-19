@@ -821,7 +821,7 @@ int main(int argc, char** argv)
                 p_arr.push_back(points[v]);
             }
 
-            int data_count = 1000; // 这里要是平方数不然bin算出来不对
+            int data_count = 3000; // 这里要是平方数不然bin算出来不对
             int bin = 10;
                 //sqrt(data_count);
 
