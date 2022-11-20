@@ -156,7 +156,7 @@ int main(int argc, char** argv)
         {
             //added
             int meshinfo_size = 57;
-            ifstream file("csv/report1115dots1000.csv", ios::in);
+            ifstream file("csv/reportdots3000NOLABEL.csv", ios::in);
             vector<vector<string>> content;
             vector<string> row;
             vector<double> selected_mesh;
@@ -226,10 +226,14 @@ int main(int argc, char** argv)
                     continue;
                 double Eucfactor = 0, Eucfactor3 = 0;
                 double EMDEucfactor = 0;
-                double Coschild = 0, Cosparent = 1;
-                double Coschildm = 0, Cosparentm = 1;
-                double Coschildd = 0, Cosparentd = 1;
-                double Cosfactor1 = 0, Cosfactor2 = 0, Cosfactor3 = 0, Cosfactorm1 = 0, Cosfactorm2 = 0, Cosfactorm3 = 0, Cosfactord1 = 0, Cosfactord2 = 0, Cosfactord3 = 0;
+                double Coschild = 0, Cosparent = 1, Coschildm = 0,
+                       Cosparentm = 1, Coschildda = 0, Cosparentdda = 1,
+                       Coschilddb = 0, Cosparentddb = 1, Coschilddc = 0,
+                       Cosparentddc = 1, Coschilddd = 0, Cosparentddd =1;
+                double Cosfactor1 = 0, Cosfactor2 = 0, Cosfactor3 = 0, Cosfactorm1 = 0, Cosfactorm2 = 0, Cosfactorm3 = 0, Cosfactorda1 = 0, Cosfactorda2 = 0, Cosfactorda3 = 0;
+                double Cosfactordb1 = 0, Cosfactordb2 = 0, Cosfactordb3 = 0,
+                       Cosfactordc1 = 0, Cosfactordc2 = 0, Cosfactordc3 = 0,
+                       Cosfactordd1 = 0, Cosfactordd2 = 0, Cosfactordd3 = 0;
                 Eucstore.clear();
                 Cosstore.clear();
                 EMDstore.clear();
@@ -279,13 +283,34 @@ int main(int argc, char** argv)
                         Cosfactor3 += pow(stod(content[i][j]), 2);
                         Coschild += Cosfactor1;
                     }
-                    /*else if ()
+                    else if (j >= 17 && j < 27)
                     {
-                        Cosfactord1 = selected_mesh[j] * stod(content[i][j]);
-                        Cosfactord2 += pow(selected_mesh[j], 2);
-                        Cosfactord3 += pow(stod(content[i][j]), 2);
-                        Coschildd += Cosfactord1;
-                    }*/
+                        Cosfactorda1 = selected_mesh[j] * stod(content[i][j]);
+                        Cosfactorda2 += pow(selected_mesh[j], 2);
+                        Cosfactorda3 += pow(stod(content[i][j]), 2);
+                        Coschildda += Cosfactorda1;
+                    }
+                    else if (j >= 27 && j < 37)
+                    {
+                        Cosfactordb1 = selected_mesh[j] * stod(content[i][j]);
+                        Cosfactordb2 += pow(selected_mesh[j], 2);
+                        Cosfactordb3 += pow(stod(content[i][j]), 2);
+                        Coschilddb += Cosfactordb1;
+                    }
+                    else if (j >= 37 && j < 47)
+                    {
+                        Cosfactordc1 = selected_mesh[j] * stod(content[i][j]);
+                        Cosfactordc2 += pow(selected_mesh[j], 2);
+                        Cosfactordc3 += pow(stod(content[i][j]), 2);
+                        Coschilddc += Cosfactordc1;
+                    }
+                    else if (j >= 47 && j < 57)
+                    {
+                        Cosfactordd1 = selected_mesh[j] * stod(content[i][j]);
+                        Cosfactordd2 += pow(selected_mesh[j], 2);
+                        Cosfactordd3 += pow(stod(content[i][j]), 2);
+                        Coschilddd += Cosfactordd1;
+                    }
                     else
                     {
                         Cosfactorm1 = selected_mesh[j] * stod(content[i][j]);
@@ -334,9 +359,17 @@ int main(int argc, char** argv)
                 //Cos
                 Cosparent = sqrt(Cosfactor2) * sqrt(Cosfactor3);
                 Cosparentm = sqrt(Cosfactorm2) * sqrt(Cosfactorm3);
-                float cos_wa3 = 0, cos_wd = 0, cos_w = 1 - cos_wa3 - cos_wd;
+                Cosparentdda = sqrt(Cosfactorda2) * sqrt(Cosfactorda3);
+                Cosparentddb = sqrt(Cosfactordb2) * sqrt(Cosfactordb3);
+                Cosparentddc = sqrt(Cosfactordc2) * sqrt(Cosfactordc3);
+                Cosparentddd = sqrt(Cosfactordd2) * sqrt(Cosfactordd3);
+                float cos_wa3 = 0.02, cos_wd1 = 0.35, cos_wd2 = 0.15, cos_wd3 = 0.04, cos_wd4 = 0.04, cos_wg = 1 - cos_wa3 - cos_wd1 - cos_wd2 - cos_wd3 -cos_wd4;
                 Cosstore.push_back(cos_wa3 * abs(1 - (Coschild / Cosparent)) +
-                                   cos_w * abs(1 - (Coschildm / Cosparentm)) + cos_wd * abs(1 - (Coschildd / Cosparentd)));
+                    cos_wg * abs(1 - (Coschildm / Cosparentm)) +
+                    cos_wd1 * abs(1 - (Coschildda / Cosparentdda)) +
+                    cos_wd2 * abs(1 - (Coschilddb / Cosparentddb)) +
+                    cos_wd3 * abs(1 - (Coschilddc / Cosparentddc)) +
+                    cos_wd4 * abs(1 - (Coschilddd / Cosparentddd)));
                 //std::cout << "Cosparent: " << Cosparent<< " Cosresult : " << 1 - (Coschild / Cosparent)<< std::endl;
                 Cosdistancearray.push_back(Cosstore);
                 
