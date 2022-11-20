@@ -80,7 +80,7 @@ void kdtree_demo(const size_t N, vector<vector<string>> array)
     index.buildIndex();
 #endif
     std::cout << "Notice: 261.off - 280.off is not available\n";
-    std::cout << "please give a mesh No. (1-400): \n";
+    std::cout << "please give a row num (1-375) and examine the mesh: \n";
     int selectednot;
     cin >> selectednot;
     int selectedno = selectednot - 1;
@@ -177,35 +177,6 @@ bool sortcol(const vector<double>& v1, const vector<double>& v2)
 
 int main(int argc, char** argv)
 {
-    std::cout << "(bonus)Do you want to try KNN? (y/n)\n";
-    char knninput;
-    std::cin >> knninput;
-    
-    if (knninput == 'y')
-    {
-        ifstream tsnefile("csv/t-sne-nolabel.csv", ios::in);
-        vector<vector<string>> tsnecontent;
-        vector<string> tsnerow;
-        string tsneline, tsneword;
-        if (tsnefile.is_open())
-        {
-            while (getline(tsnefile, tsneline))
-            {
-                tsnerow.clear();
-                stringstream tsnestr(tsneline);
-                while (getline(tsnestr, tsneword, ','))
-                {
-                    tsnerow.push_back(tsneword);
-                }
-                tsnecontent.push_back(tsnerow);
-            } 
-        }
-        else
-            std::cout << "Could not open the file\n";
-        //knn search
-        kdtree_demo<float>(375, tsnecontent);
-        exit(1);
-    }
     std::cout << "Readme: Please use the mesh in Labeled PSB folder only or the type classifying will not work properly\n";
     std::cout << "Notice: 261.off - 280.off is not avaliable\n";
     std::cout << "Do you want to skip examine before querying? (y/n)\n";
@@ -698,6 +669,35 @@ int main(int argc, char** argv)
             else if (itera == 260)
                 itera = 280;
         }
+        std::cout << "(bonus)Do you want to try KNN? (y/n)\n";
+        char knninput;
+        std::cin >> knninput;
+
+        if (knninput == 'y')
+        {
+            ifstream tsnefile("csv/t-sne-nolabel.csv", ios::in);
+            vector<vector<string>> tsnecontent;
+            vector<string> tsnerow;
+            string tsneline, tsneword;
+            if (tsnefile.is_open())
+            {
+                while (getline(tsnefile, tsneline))
+                {
+                    tsnerow.clear();
+                    stringstream tsnestr(tsneline);
+                    while (getline(tsnestr, tsneword, ','))
+                    {
+                        tsnerow.push_back(tsneword);
+                    }
+                    tsnecontent.push_back(tsnerow);
+                }
+            }
+            else
+                std::cout << "Could not open the file\n";
+            //knn search
+            kdtree_demo<float>(375, tsnecontent);
+            exit(1);
+        }
         if (awake_viewer)
         {
             bool gui = true;
@@ -715,6 +715,16 @@ int main(int argc, char** argv)
             viewer3.load_mesh(target[2]);
             viewer3.run();
             viewer3.~MeshViewer();
+
+            MeshViewer viewer4("MeshViewer: 4th", 800, 600, gui);
+            viewer4.load_mesh(target[3]);
+            viewer4.run();
+            viewer4.~MeshViewer();
+
+            MeshViewer viewer5("MeshViewer: 5th", 800, 600, gui);
+            viewer5.load_mesh(target[4]);
+            viewer5.run();
+            viewer5.~MeshViewer();
             exit(1);
         }
         cin.get();
@@ -1539,6 +1549,17 @@ int main(int argc, char** argv)
                 viewer3.load_mesh(target[2]);
                 viewer3.run();
                 viewer3.~MeshViewer();
+
+                MeshViewer viewer4("MeshViewer: 4th", 800, 600, gui);
+                viewer4.load_mesh(target[3]);
+                viewer4.run();
+                viewer4.~MeshViewer();
+
+                MeshViewer viewer5("MeshViewer: 5th", 800, 600, gui);
+                viewer5.load_mesh(target[4]);
+                viewer5.run();
+                viewer5.~MeshViewer();
+
                 exit(1);
             }
         }
