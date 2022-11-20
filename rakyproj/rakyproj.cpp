@@ -33,16 +33,37 @@ using namespace pmp;
 using namespace std;
 using namespace nanoflann;
 
+string* Type = new string[20]{
+    "Human",     "Cup",   "Glass", "Airplane", "Ant",  "Chair",  "Octopus",
+    "Table",     "Teddy", "Hand",  "Plier",    "Fish", "Bird",   " ",
+    "Armadillo", "Bust",  "Mech",  "Bearing",  "Vase", "Fourleg"};
+//cup =2, glass = 2, bearing = 1
+int* Typecnt = new int[20]{
+    20, 18, 18, 20, 20, 20, 20, 20, 20, 20,
+    20, 20, 20, 0,  20, 20, 20, 19, 20, 20,
+};
+
+char examinput, filepath[11] = "LabeledDB/", filetype[5] = ".off",
+                csvpath[15] = "csv/report.csv";
+
 //KNN tool
 template <typename num_t>
-void kdtree_demo(const size_t N)
+void kdtree_demo(const size_t N, vector<vector<string>> array)
 {
     using std::cout;
     using std::endl;
 
-    PointCloud<num_t> cloud;
-    // Generate points:
-    generateRandomPointCloud(cloud, N);
+    PointCloud<float> cloud;
+    //generateRandomPointCloud(cloud, N);
+    //PointCloud<T>& point;
+    cloud.pts.resize(N);
+    for (size_t i = 0; i < N; i++)
+    {
+        
+        cloud.pts[i].x = stod(array[i][0]);
+        cloud.pts[i].y = stod(array[i][1]);
+        cloud.pts[i].z = 0;
+    }
 
     // construct a kd-tree index:
     using my_kd_tree_t = nanoflann::KDTreeSingleIndexAdaptor<
@@ -58,9 +79,24 @@ void kdtree_demo(const size_t N)
     cloud.pts.resize(cloud.pts.size() * 0.5);
     index.buildIndex();
 #endif
+    std::cout << "Notice: 261.off - 280.off is not available\n";
+    std::cout << "please give a mesh No. (1-400): \n";
+    int selectednot;
+    cin >> selectednot;
+    int selectedno = selectednot - 1;
+    const num_t query_pt[3] = {stof(array[selectedno][0]), stof(array[selectedno][1]),
+                               0}; //查找的位置
+    char** target = new char*[10];
+    for (int i = 0; i < 10; ++i)
+        target[i] = new char[20];
+    bool gui = true;
 
-    const num_t query_pt[3] = {0.5, 0.5, 0.5}; //查找的位置
-
+    std::sprintf(target[9], "%s%d%s", filepath, stoi(array[selectedno][2]),
+                 filetype);
+    MeshViewer viewer0("MeshViewer: selected mesh", 800, 600, gui);
+    viewer0.load_mesh(target[9]);
+    viewer0.run();
+    viewer0.~MeshViewer();
     // ----------------------------------------------------------------
     // knnSearch():  Perform a search for the N closest points
     // ----------------------------------------------------------------
@@ -78,9 +114,43 @@ void kdtree_demo(const size_t N)
 
         cout << "knnSearch(): num_results=" << num_results << "\n";
         for (size_t i = 0; i < num_results; i++)
-            cout << "idx[" << i << "]=" << ret_index[i] << " dist[" << i
-                 << "]=" << out_dist_sqr[i] << endl;
+            cout << "idx[" << i << "]=" << array[ret_index[i]][2] << " dist[" << i
+                 << "]=" << out_dist_sqr[i] << " "
+                 << Type[(stoi(array[ret_index[i]][2]) - 1) / 20] << endl;
         cout << "\n";
+
+        
+        for (int i = 0; i < num_results; i++)
+        {
+            std::sprintf(target[i], "%s%d%s", filepath, stoi(array[ret_index[i]][2]),
+                         filetype);
+        }
+
+        MeshViewer viewer("MeshViewer: 1st", 800, 600, gui);
+        viewer.load_mesh(target[0]);
+        viewer.run();
+        viewer.~MeshViewer();
+
+        MeshViewer viewer2("MeshViewer: 2nd", 800, 600, gui);
+        viewer2.load_mesh(target[1]);
+        viewer2.run();
+        viewer2.~MeshViewer();
+
+        MeshViewer viewer3("MeshViewer: 3rd", 800, 600, gui);
+        viewer3.load_mesh(target[2]);
+        viewer3.run();
+        viewer3.~MeshViewer();
+
+        MeshViewer viewer4("MeshViewer: 4th", 800, 600, gui);
+        viewer4.load_mesh(target[3]);
+        viewer4.run();
+        viewer4.~MeshViewer();
+
+        MeshViewer viewer5("MeshViewer: 5th", 800, 600, gui);
+        viewer5.load_mesh(target[4]);
+        viewer5.run();
+        viewer5.~MeshViewer();
+        exit(1);
     }
 }
 
@@ -107,21 +177,39 @@ bool sortcol(const vector<double>& v1, const vector<double>& v2)
 
 int main(int argc, char** argv)
 {
+    std::cout << "(bonus)Do you want to try KNN? (y/n)\n";
+    char knninput;
+    std::cin >> knninput;
+    
+    if (knninput == 'y')
+    {
+        ifstream tsnefile("csv/t-sne-nolabel.csv", ios::in);
+        vector<vector<string>> tsnecontent;
+        vector<string> tsnerow;
+        string tsneline, tsneword;
+        if (tsnefile.is_open())
+        {
+            while (getline(tsnefile, tsneline))
+            {
+                tsnerow.clear();
+                stringstream tsnestr(tsneline);
+                while (getline(tsnestr, tsneword, ','))
+                {
+                    tsnerow.push_back(tsneword);
+                }
+                tsnecontent.push_back(tsnerow);
+            } 
+        }
+        else
+            std::cout << "Could not open the file\n";
+        //knn search
+        kdtree_demo<float>(375, tsnecontent);
+        exit(1);
+    }
     std::cout << "Readme: Please use the mesh in Labeled PSB folder only or the type classifying will not work properly\n";
     std::cout << "Notice: 261.off - 280.off is not avaliable\n";
     std::cout << "Do you want to skip examine before querying? (y/n)\n";
-    string *Type = new string[20]{"Human", "Cup",     "Glass",   "Airplane", "Ant",
-                       "Chair", "Octopus", "Table",   "Teddy",    "Hand",
-                       "Plier", "Fish",    "Bird",    " ",        "Armadillo",
-                       "Bust",  "Mech",    "Bearing", "Vase",     "Fourleg"};
-    //cup =2, glass = 2, bearing = 1
-    int *Typecnt = new int[20] {
-        20, 18, 18, 20, 20, 20, 20, 20, 20, 20,
-        20, 20, 20, 0,  20, 20, 20, 19, 20, 20,
-    };
     
-    char examinput, filepath[11] = "LabeledDB/", filetype[5] = ".off",
-         csvpath[15] = "csv/report.csv";
 
     // Clear csv file and open
     fstream csvout;
@@ -159,6 +247,7 @@ int main(int argc, char** argv)
             ifstream file("csv/reportdots3000NOLABEL.csv", ios::in);
             vector<vector<string>> content;
             vector<string> row;
+            string line, word, selected_meshclass;
             vector<double> selected_mesh;
             vector<double> Eucstore;
             vector<vector<double>> Euclideandistancearray;
@@ -169,8 +258,6 @@ int main(int argc, char** argv)
                 bd2w, bd3w, bd4w;
             vector<double> EMDstore;
             vector<vector<double>> EMDdistancearray;
-            string line, word, selected_meshclass;
-            
             double Euclideandistance;
             bool findno = false;
             selected_mesh.push_back(0);
@@ -1021,12 +1108,16 @@ int main(int argc, char** argv)
                         continue;
                     double Eucfactor = 0, Eucfactor3 = 0;
                     double EMDEucfactor = 0;
-                    double Coschild = 0, Cosparent = 1;
-                    double Coschildm = 0, Cosparentm = 1;
-                    double Coschildd = 0, Cosparentd = 1;
+                    double Coschild = 0, Cosparent = 1, Coschildm = 0,
+                           Cosparentm = 1, Coschildda = 0, Cosparentdda = 1,
+                           Coschilddb = 0, Cosparentddb = 1, Coschilddc = 0,
+                           Cosparentddc = 1, Coschilddd = 0, Cosparentddd = 1;
                     double Cosfactor1 = 0, Cosfactor2 = 0, Cosfactor3 = 0,
                            Cosfactorm1 = 0, Cosfactorm2 = 0, Cosfactorm3 = 0,
-                           Cosfactord1 = 0, Cosfactord2 = 0, Cosfactord3 = 0;
+                           Cosfactorda1 = 0, Cosfactorda2 = 0, Cosfactorda3 = 0;
+                    double Cosfactordb1 = 0, Cosfactordb2 = 0, Cosfactordb3 = 0,
+                           Cosfactordc1 = 0, Cosfactordc2 = 0, Cosfactordc3 = 0,
+                           Cosfactordd1 = 0, Cosfactordd2 = 0, Cosfactordd3 = 0;
                     Eucstore.clear();
                     Cosstore.clear();
                     EMDstore.clear();
@@ -1078,6 +1169,38 @@ int main(int argc, char** argv)
                             Cosfactor3 += pow(stod(content[i][j]), 2);
                             Coschild += Cosfactor1;
                         }
+                        else if (j >= 17 && j < 27)
+                        {
+                            Cosfactorda1 =
+                                selected_mesh[j] * stod(content[i][j]);
+                            Cosfactorda2 += pow(selected_mesh[j], 2);
+                            Cosfactorda3 += pow(stod(content[i][j]), 2);
+                            Coschildda += Cosfactorda1;
+                        }
+                        else if (j >= 27 && j < 37)
+                        {
+                            Cosfactordb1 =
+                                selected_mesh[j] * stod(content[i][j]);
+                            Cosfactordb2 += pow(selected_mesh[j], 2);
+                            Cosfactordb3 += pow(stod(content[i][j]), 2);
+                            Coschilddb += Cosfactordb1;
+                        }
+                        else if (j >= 37 && j < 47)
+                        {
+                            Cosfactordc1 =
+                                selected_mesh[j] * stod(content[i][j]);
+                            Cosfactordc2 += pow(selected_mesh[j], 2);
+                            Cosfactordc3 += pow(stod(content[i][j]), 2);
+                            Coschilddc += Cosfactordc1;
+                        }
+                        else if (j >= 47 && j < 57)
+                        {
+                            Cosfactordd1 =
+                                selected_mesh[j] * stod(content[i][j]);
+                            Cosfactordd2 += pow(selected_mesh[j], 2);
+                            Cosfactordd3 += pow(stod(content[i][j]), 2);
+                            Coschilddd += Cosfactordd1;
+                        }
                         else
                         {
                             Cosfactorm1 =
@@ -1128,14 +1251,24 @@ int main(int argc, char** argv)
                     //Cos
                     Cosparent = sqrt(Cosfactor2) * sqrt(Cosfactor3);
                     Cosparentm = sqrt(Cosfactorm2) * sqrt(Cosfactorm3);
-                    float cos_wa3 = 0, cos_wd = 0, cos_w = 1 - cos_wa3 - cos_wd;
+                    Cosparentdda = sqrt(Cosfactorda2) * sqrt(Cosfactorda3);
+                    Cosparentddb = sqrt(Cosfactordb2) * sqrt(Cosfactordb3);
+                    Cosparentddc = sqrt(Cosfactordc2) * sqrt(Cosfactordc3);
+                    Cosparentddd = sqrt(Cosfactordd2) * sqrt(Cosfactordd3);
+                    float cos_wa3 = 0.02, cos_wd1 = 0.35, cos_wd2 = 0.15,
+                          cos_wd3 = 0.04, cos_wd4 = 0.04,
+                          cos_wg = 1 - cos_wa3 - cos_wd1 - cos_wd2 - cos_wd3 -
+                                   cos_wd4;
                     Cosstore.push_back(
                         cos_wa3 * abs(1 - (Coschild / Cosparent)) +
-                        cos_w * abs(1 - (Coschildm / Cosparentm)) +
-                        cos_wd * abs(1 - (Coschildd / Cosparentd)));
+                        cos_wg * abs(1 - (Coschildm / Cosparentm)) +
+                        cos_wd1 * abs(1 - (Coschildda / Cosparentdda)) +
+                        cos_wd2 * abs(1 - (Coschilddb / Cosparentddb)) +
+                        cos_wd3 * abs(1 - (Coschilddc / Cosparentddc)) +
+                        cos_wd4 * abs(1 - (Coschilddd / Cosparentddd)));
                     //std::cout << "Cosparent: " << Cosparent<< " Cosresult : " << 1 - (Coschild / Cosparent)<< std::endl;
                     Cosdistancearray.push_back(Cosstore);
-
+                
                     //EMD here
                     for (int j = 0; j < 10; j++)
                     {
